@@ -2,6 +2,27 @@
 
 A modern, elegant companion website built with React, TypeScript, and DigitalOcean cloud infrastructure.
 
+## ✨ Key Features
+
+### Backend Infrastructure (Phase 1 - 40% Complete)
+- ✅ **PostgreSQL Database Schema** - Complete with 8 tables, indexes, triggers, constraints
+- ✅ **UTM Attribution Tracking** - Frontend session management with browser fingerprinting
+- ✅ **Booking API** - POST /api/bookings with validation, duplicate detection, email notifications
+- ✅ **Session Registration** - POST /api/sessions/register for user tracking
+- ✅ **Analytics Aggregation** - GET /api/analytics/bookings with platform attribution
+- ⏳ **Payment Integration** - Eway/PayID (Phase 2)
+- ⏳ **A/B Testing** - Experimentation framework (Phase 2)
+- ⏳ **Privacy Analytics** - PostHog/Plausible integration (Phase 2)
+
+### Frontend Features
+- Responsive booking form with validation
+- Real-time UTM parameter extraction
+- Session persistence across browser tabs
+- Conversion funnel tracking
+- Mobile-optimized UI with Tailwind CSS
+
+---
+
 ## 🚀 Tech Stack
 
 ### Frontend
@@ -107,6 +128,33 @@ VITE_API_BASE_URL=http://localhost:3001/api
 VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 # Add other variables as needed
 ```
+
+### Backend Deployment (Quick Start)
+
+**For a complete step-by-step deployment guide, see [DEPLOYMENT-GUIDE.md](./DEPLOYMENT-GUIDE.md)**
+
+Quick summary:
+1. Create PostgreSQL 15 database on DigitalOcean
+2. Deploy schema: `psql "your_connection_string" -f db/schema.sql`
+3. Configure environment variables in DigitalOcean App Platform
+4. Set up SendGrid account and add credentials
+5. Push to GitHub - auto-deploys via GitHub Actions
+
+Expected time: **30-45 minutes**
+
+### Backend Testing (Quick Start)
+
+**For comprehensive testing procedures, see [TESTING-GUIDE.md](./TESTING-GUIDE.md)**
+
+Quick verification:
+1. POST /api/bookings - Create a test booking
+2. Check inbox - Verify confirmation emails sent
+3. GET /api/analytics/bookings - Query conversion data
+4. Inspect database - Verify records created
+
+---
+
+## 🛠️ Getting Started (Development)
 
 ### Development
 
@@ -353,12 +401,25 @@ This project is licensed under the ISC License.
 
 ## 🆘 Support & Documentation
 
+### Project Documentation
+
+- **[DEPLOYMENT-GUIDE.md](./DEPLOYMENT-GUIDE.md)** - Complete step-by-step guide to deploy backend to DigitalOcean (30-45 min)
+- **[TESTING-GUIDE.md](./TESTING-GUIDE.md)** - Comprehensive testing procedures for all API endpoints and features
+- **[BACKEND-IMPLEMENTATION.md](./BACKEND-IMPLEMENTATION.md)** - Backend architecture, 40% Phase 1 completion status, and remaining work
+- **[TECHNICAL-ANALYSIS-REPORT.md](./TECHNICAL-ANALYSIS-REPORT.md)** - Architecture analysis and optimization recommendations
+- **[DO-CLI-SETUP.md](./DO-CLI-SETUP.md)** - PowerShell wrapper for DigitalOcean CLI operations
+- **[DO-CLI-QUICK-REF.md](./DO-CLI-QUICK-REF.md)** - Quick reference for DigitalOcean CLI commands
+
+### External Resources
+
 - [Vite Documentation](https://vitejs.dev/)
 - [React Documentation](https://react.dev/)
 - [DigitalOcean App Platform](https://docs.digitalocean.com/products/app-platform/)
 - [DigitalOcean Functions](https://docs.digitalocean.com/products/functions/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Playwright](https://playwright.dev/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [SendGrid API](https://docs.sendgrid.com/)
 
 ## ✅ Deployment Checklist
 
