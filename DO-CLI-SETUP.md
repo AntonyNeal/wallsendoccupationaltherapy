@@ -174,12 +174,14 @@ do -Command "databases list"
 Once you have the CLI working:
 
 1. **Check your current infrastructure:**
+
    ```powershell
    do -Command "apps list"
    do -Command "databases list"
    ```
 
 2. **Get your database connection details:**
+
    ```powershell
    do -Command "databases get <database-id>"
    ```
@@ -205,6 +207,7 @@ echo ".env.local" >> .gitignore
 ```
 
 If you accidentally expose a token:
+
 1. Go to https://cloud.digitalocean.com/account/api/tokens
 2. Click the token and delete it
 3. Generate a new token

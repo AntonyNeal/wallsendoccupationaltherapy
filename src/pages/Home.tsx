@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import BookingModal from '../components/BookingModal';
 
 const heroImages = [
   'https://pbs.twimg.com/media/G3hgK2hX0AAB8RL.jpg:large',
@@ -12,6 +13,7 @@ const heroImages = [
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -198,13 +200,19 @@ export default function Home() {
                 elegance, and authentic presence are my promise to you.
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <button className="group px-10 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-sm font-light tracking-wide hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                <button
+                  onClick={() => setIsBookingOpen(true)}
+                  className="group px-10 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-sm font-light tracking-wide hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                >
                   Send Inquiry
                   <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">
                     →
                   </span>
                 </button>
-                <button className="group px-10 py-4 border-2 border-rose-300 text-rose-400 rounded-sm font-light tracking-wide hover:bg-rose-50 hover:border-rose-400 transition-all duration-300">
+                <button
+                  onClick={() => setIsBookingOpen(true)}
+                  className="group px-10 py-4 border-2 border-rose-300 text-rose-400 rounded-sm font-light tracking-wide hover:bg-rose-50 hover:border-rose-400 transition-all duration-300"
+                >
                   Schedule Call
                   <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">
                     →
@@ -221,6 +229,8 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
     </>
   );
 }

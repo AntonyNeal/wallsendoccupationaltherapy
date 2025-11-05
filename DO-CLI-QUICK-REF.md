@@ -3,6 +3,7 @@
 ## Setup (1 minute)
 
 1. **Get your API token:**
+
    ```
    https://cloud.digitalocean.com/account/api/tokens → Generate New Token → Copy
    ```
@@ -10,18 +11,20 @@
 2. **Set environment variable (choose one):**
 
    **Temporary (current session):**
+
    ```powershell
    $env:DO_API_TOKEN = "dop_v1_your_token_here"
    ```
 
    **Permanent (all sessions):**
+
    ```powershell
    # Edit your profile
    notepad $PROFILE
-   
+
    # Add this line:
    $env:DO_API_TOKEN = "dop_v1_your_token_here"
-   
+
    # Save and reload
    . $PROFILE
    ```
@@ -67,6 +70,7 @@ do -Command "databases list"
 Once you have the CLI working:
 
 1. **Get your database connection info:**
+
    ```powershell
    do -Command "databases list"
    do -Command "databases get [database-id]"
@@ -80,12 +84,12 @@ Once you have the CLI working:
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| "DO_API_TOKEN not set" | Run: `$env:DO_API_TOKEN = "your_token"` |
-| "401 Unauthorized" | Token expired → get new one from DO console |
-| "No results found" | Token valid but no resources in that category |
-| Script not found | Use full path: `.\scripts\do-cli.ps1` |
+| Problem                | Solution                                      |
+| ---------------------- | --------------------------------------------- |
+| "DO_API_TOKEN not set" | Run: `$env:DO_API_TOKEN = "your_token"`       |
+| "401 Unauthorized"     | Token expired → get new one from DO console   |
+| "No results found"     | Token valid but no resources in that category |
+| Script not found       | Use full path: `.\scripts\do-cli.ps1`         |
 
 ---
 
