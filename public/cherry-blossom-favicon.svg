@@ -1,40 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Cherry Blossom Favicon -->
+  <!-- Cherry Blossom Favicon - Simplified elegant design -->
   <defs>
     <style>
-      .petal { fill: #FFB6C1; stroke: #FF69B4; stroke-width: 0.5; }
-      .center { fill: #FFD700; }
-      .stem { stroke: #228B22; stroke-width: 1.5; fill: none; }
+      .petal { fill: #FFB6D9; stroke: #FF69B4; stroke-width: 0.3; }
+      .petal-light { fill: #FFC0E0; stroke: #FF69B4; stroke-width: 0.3; }
+      .center { fill: #FFD700; stroke: #FFA500; stroke-width: 0.5; }
     </style>
   </defs>
   
-  <!-- Stem -->
-  <path class="stem" d="M 50 100 Q 48 75 50 50" />
-  
-  <!-- Left leaf -->
-  <ellipse cx="35" cy="65" rx="8" ry="12" fill="#90EE90" opacity="0.7" transform="rotate(-45 35 65)" />
-  
-  <!-- Right leaf -->
-  <ellipse cx="65" cy="65" rx="8" ry="12" fill="#90EE90" opacity="0.7" transform="rotate(45 65 65)" />
-  
-  <!-- Flower petals (5 petals in a circle) -->
-  <g id="flower" transform="translate(50, 45)">
-    <!-- Top petal -->
-    <ellipse class="petal" cx="0" cy="-18" rx="8" ry="14" />
+  <!-- Five petals arranged in a circle -->
+  <g transform="translate(50, 50)">
+    <!-- Petal 1 (top) -->
+    <ellipse class="petal" cx="0" cy="-16" rx="10" ry="16" />
     
-    <!-- Top-right petal -->
-    <ellipse class="petal" cx="17.1" cy="-5.5" rx="8" ry="14" transform="rotate(72)" />
+    <!-- Petal 2 (top-right) -->
+    <ellipse class="petal-light" cx="15.2" cy="-4.9" rx="10" ry="16" transform="rotate(72 15.2 -4.9)" />
     
-    <!-- Bottom-right petal -->
-    <ellipse class="petal" cx="10.6" cy="14.5" rx="8" ry="14" transform="rotate(144)" />
+    <!-- Petal 3 (bottom-right) -->
+    <ellipse class="petal" cx="9.4" cy="12.9" rx="10" ry="16" transform="rotate(144 9.4 12.9)" />
     
-    <!-- Bottom-left petal -->
-    <ellipse class="petal" cx="-10.6" cy="14.5" rx="8" ry="14" transform="rotate(216)" />
+    <!-- Petal 4 (bottom-left) -->
+    <ellipse class="petal-light" cx="-9.4" cy="12.9" rx="10" ry="16" transform="rotate(216 -9.4 12.9)" />
     
-    <!-- Top-left petal -->
-    <ellipse class="petal" cx="-17.1" cy="-5.5" rx="8" ry="14" transform="rotate(288)" />
+    <!-- Petal 5 (top-left) -->
+    <ellipse class="petal" cx="-15.2" cy="-4.9" rx="10" ry="16" transform="rotate(288 -15.2 -4.9)" />
     
-    <!-- Center -->
-    <circle class="center" cx="0" cy="0" r="5" />
+    <!-- Center circle -->
+    <circle class="center" cx="0" cy="0" r="6" />
   </g>
 </svg>
