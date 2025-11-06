@@ -188,9 +188,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Carousel Indicators - Fixed positioning for guaranteed visibility */}
+        {/* Carousel Indicators - Subtle and refined */}
         <div
-          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4 sm:gap-5 justify-center select-none pointer-events-auto"
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-3 sm:gap-3 justify-center select-none pointer-events-auto"
           onMouseMove={handleIndicatorMouseMove}
           onMouseUp={handleIndicatorMouseUp}
           onMouseLeave={handleIndicatorMouseUp}
@@ -199,13 +199,13 @@ export default function Home() {
             <button
               key={index}
               onMouseDown={(e) => handleIndicatorMouseDown(e, index)}
-              className={`rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white flex-shrink-0 ${
+              className={`rounded-full transition-all duration-300 cursor-pointer focus:outline-none flex-shrink-0 ${
                 index === currentImageIndex
-                  ? 'bg-yellow-300 w-6 h-6 sm:w-7 sm:h-7 border-3 border-white'
-                  : 'bg-white w-5 h-5 sm:w-6 sm:h-6 border-2 border-white hover:bg-yellow-100'
+                  ? 'bg-white/80 w-2.5 h-2.5'
+                  : 'bg-white/40 w-2 h-2 hover:bg-white/60'
               }`}
               style={{
-                boxShadow: '0 4px 12px rgba(0,0,0,1), 0 0 8px rgba(255,255,255,0.8)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
               }}
               aria-label={`Go to image ${index + 1}`}
             />
