@@ -116,9 +116,9 @@ export default function Home() {
         </style>
       </Helmet>
 
-      <div className="home-page bg-black w-screen h-screen overflow-hidden relative">
+      <div className="home-page bg-black fixed inset-0 overflow-hidden">
         {/* Full-Screen Hero Section with Photo Carousel */}
-        <section className="relative w-full h-full overflow-hidden flex items-center justify-center">
+        <section className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
           {/* Carousel Container */}
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             {heroImages.map((image, index) => {

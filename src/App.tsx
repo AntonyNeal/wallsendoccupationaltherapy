@@ -63,7 +63,9 @@ function App() {
 
       <div className="min-h-screen bg-white">
         {/* Navigation Header */}
-        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-rose-100">
+        <header
+          className={`sticky top-0 z-50 ${location.pathname === '/' ? 'bg-transparent backdrop-blur-md border-b-0' : 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-rose-100'}`}
+        >
           <div className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 xl:py-6">
             <nav className="max-w-7xl mx-auto">
               {/* Mobile Layout */}
@@ -101,7 +103,10 @@ function App() {
                       }, 500);
                     }
                   }}
-                  className="text-xl sm:text-2xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer select-none"
+                  className={`text-xl sm:text-2xl font-light ${location.pathname === '/' ? 'text-white' : 'text-gray-900'} tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer select-none`}
+                  style={
+                    location.pathname === '/' ? { textShadow: '0 2px 8px rgba(0,0,0,0.8)' } : {}
+                  }
                   title={
                     location.pathname === '/admin'
                       ? 'Click to return home'
@@ -125,7 +130,12 @@ function App() {
                       e.stopPropagation();
                       setIsMobileMenuOpen(!isMobileMenuOpen);
                     }}
-                    className="p-2 text-gray-900 hover:text-rose-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 rounded-lg"
+                    className={`p-2 ${location.pathname === '/' ? 'text-white' : 'text-gray-900'} hover:text-rose-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 rounded-lg`}
+                    style={
+                      location.pathname === '/'
+                        ? { filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }
+                        : {}
+                    }
                     aria-label="Toggle mobile menu"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +194,10 @@ function App() {
                       }, 500);
                     }
                   }}
-                  className="text-3xl xl:text-4xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer select-none"
+                  className={`text-3xl xl:text-4xl font-light ${location.pathname === '/' ? 'text-white' : 'text-gray-900'} tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer select-none`}
+                  style={
+                    location.pathname === '/' ? { textShadow: '0 2px 8px rgba(0,0,0,0.8)' } : {}
+                  }
                   title={
                     location.pathname === '/admin'
                       ? 'Click to return home'
@@ -201,8 +214,13 @@ function App() {
                     className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
                       location.pathname === '/about'
                         ? 'text-rose-600'
-                        : 'text-gray-900 hover:text-rose-600'
+                        : location.pathname === '/'
+                          ? 'text-white hover:text-rose-400'
+                          : 'text-gray-900 hover:text-rose-600'
                     }`}
+                    style={
+                      location.pathname === '/' ? { textShadow: '0 2px 4px rgba(0,0,0,0.8)' } : {}
+                    }
                     aria-label="About page"
                   >
                     About
@@ -212,8 +230,13 @@ function App() {
                     className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
                       location.pathname === '/gallery'
                         ? 'text-rose-600'
-                        : 'text-gray-900 hover:text-rose-600'
+                        : location.pathname === '/'
+                          ? 'text-white hover:text-rose-400'
+                          : 'text-gray-900 hover:text-rose-600'
                     }`}
+                    style={
+                      location.pathname === '/' ? { textShadow: '0 2px 4px rgba(0,0,0,0.8)' } : {}
+                    }
                     aria-label="Gallery page"
                   >
                     Gallery
@@ -223,8 +246,13 @@ function App() {
                     className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
                       location.pathname === '/prices'
                         ? 'text-rose-600'
-                        : 'text-gray-900 hover:text-rose-600'
+                        : location.pathname === '/'
+                          ? 'text-white hover:text-rose-400'
+                          : 'text-gray-900 hover:text-rose-600'
                     }`}
+                    style={
+                      location.pathname === '/' ? { textShadow: '0 2px 4px rgba(0,0,0,0.8)' } : {}
+                    }
                     aria-label="Prices page"
                   >
                     Prices
@@ -234,8 +262,13 @@ function App() {
                     className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
                       location.pathname === '/services'
                         ? 'text-rose-600'
-                        : 'text-gray-900 hover:text-rose-600'
+                        : location.pathname === '/'
+                          ? 'text-white hover:text-rose-400'
+                          : 'text-gray-900 hover:text-rose-600'
                     }`}
+                    style={
+                      location.pathname === '/' ? { textShadow: '0 2px 4px rgba(0,0,0,0.8)' } : {}
+                    }
                     aria-label="Services page"
                   >
                     Services
@@ -245,8 +278,13 @@ function App() {
                     className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
                       location.pathname === '/fly-me-to-you'
                         ? 'text-rose-600'
-                        : 'text-gray-900 hover:text-rose-600'
+                        : location.pathname === '/'
+                          ? 'text-white hover:text-rose-400'
+                          : 'text-gray-900 hover:text-rose-600'
                     }`}
+                    style={
+                      location.pathname === '/' ? { textShadow: '0 2px 4px rgba(0,0,0,0.8)' } : {}
+                    }
                     aria-label="Fly Me To You page"
                   >
                     Fly Me To You
