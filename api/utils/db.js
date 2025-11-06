@@ -7,10 +7,17 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// Parse DATABASE_URL and remove sslmode parameter to handle SSL ourselves
+let connectionString = process.env.DATABASE_URL;
+if (connectionString && connectionString.includes('sslmode=')) {
+  // Remove sslmode parameter from connection string
+  connectionString = connectionString.replace(/[?&]sslmode=[^&]*/, '').replace(/\?&/, '?').replace(/\?$/, '');
+}
+
 // Create connection pool with SSL configuration
-const poolConfig = process.env.DATABASE_URL
+const poolConfig = connectionString
   ? {
-      connectionString: process.env.DATABASE_URL,
+      connectionString: connectionString,
       ssl: {
         rejectUnauthorized: false, // Accept self-signed certificates from DigitalOcean
       },
@@ -31,13 +38,6 @@ const poolConfig = process.env.DATABASE_URL
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 2000,
     };
-
-// Override SSL mode from connection string if needed
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('sslmode=require')) {
-  poolConfig.ssl = {
-    rejectUnauthorized: false, // Required for DigitalOcean managed databases
-  };
-}
 
 const pool = new Pool(poolConfig);
 
