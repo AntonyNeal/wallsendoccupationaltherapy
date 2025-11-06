@@ -47,11 +47,17 @@ export default function Home() {
               0%, 100% { opacity: 1; transform: scale(1); }
               50% { opacity: 0.95; transform: scale(1.02); }
             }
+
+            /* Hide scroll bar on home page only */
+            .home-page {
+              overflow: hidden;
+              height: 100vh;
+            }
           `}
         </style>
       </Helmet>
 
-      <div className="min-h-screen bg-white">
+      <div className="home-page bg-white">
         {/* Full-Screen Hero Section with Photo Carousel */}
         <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
           {/* Carousel Container */}
