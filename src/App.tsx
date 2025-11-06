@@ -344,8 +344,8 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
 
-        {/* Footer - Hidden on home page to maximize photo impact */}
-        {location.pathname !== '/' && (
+        {/* Footer - Hidden on home page and admin page */}
+        {location.pathname !== '/' && location.pathname !== '/admin' && (
           <footer className="bg-gray-900 text-white py-12 sm:py-16 lg:py-20 xl:py-24 px-4 sm:px-6 lg:px-8">
             <div className="w-full px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
@@ -409,7 +409,9 @@ function App() {
       </div>
 
       <BookingModal isOpen={isBookingOpen} onClose={handleBookingClose} />
-      <MobileCTABar ctaText="Book Now" ctaAction={handleBookingOpen} />
+      {location.pathname !== '/admin' && (
+        <MobileCTABar ctaText="Book Now" ctaAction={handleBookingOpen} />
+      )}
     </>
   );
 }

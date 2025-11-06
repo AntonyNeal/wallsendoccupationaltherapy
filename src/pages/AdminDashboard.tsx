@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Calendar, ArrowUp, Instagram, Twitter, MessageSquare, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 // Mock social media posts data
 const mockSocialPosts = [
@@ -40,19 +39,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-600/20 to-purple-600/20" />
-        <div className="relative px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-rose-400 hover:text-rose-300 mb-6"
-          >
-            ← Back to Main Site
-          </Link>
-        </div>
-      </div>
-
       {/* SECTION 1: HERO FEATURE - Social Attribution Dashboard */}
       <div className="px-4 sm:px-6 lg:px-8 pb-12 max-w-7xl mx-auto">
         <div className="bg-gradient-to-br from-purple-900 to-blue-900 rounded-2xl overflow-hidden shadow-2xl">
@@ -358,13 +344,6 @@ export default function AdminDashboard() {
             <span className="mx-3">•</span>
             <span>Used by 50+ providers</span>
           </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-slate-700 mt-16 px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-7xl mx-auto text-center text-slate-400 text-sm">
-          <p>© 2025 Claire Hamilton Admin Dashboard. Secure booking management & analytics.</p>
         </div>
       </div>
     </div>

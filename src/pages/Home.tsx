@@ -141,8 +141,8 @@ export default function Home() {
                   key={index}
                   src={image}
                   alt="Claire Hamilton"
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-in-out ${transformClass}`}
-                  style={{ zIndex }}
+                  className={`absolute inset-0 w-full h-full object-contain transition-transform duration-1000 ease-in-out ${transformClass}`}
+                  style={{ zIndex, backgroundColor: '#000' }}
                 />
               );
             })}
