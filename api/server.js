@@ -56,7 +56,7 @@ app.get('/health', (req, res) => {
 
 // Import routes
 const tenantRoutes = require('./routes/tenants');
-// const availabilityRoutes = require('./routes/availability');
+const availabilityRoutes = require('./routes/availability');
 // const locationRoutes = require('./routes/locations');
 // const bookingRoutes = require('./routes/bookings');
 // const paymentRoutes = require('./routes/payments');
@@ -65,7 +65,7 @@ const tenantRoutes = require('./routes/tenants');
 // API routes - Deploy incrementally
 // Note: /api prefix is handled by ingress routing
 app.use('/tenants', tenantRoutes);
-// app.use('/availability', availabilityRoutes);
+app.use('/availability', availabilityRoutes);
 // app.use('/locations', locationRoutes);
 // app.use('/bookings', bookingRoutes);
 // app.use('/payments', paymentRoutes);
