@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Home from './pages/Home';
@@ -15,7 +15,8 @@ import { initializeSession, registerSession, trackConversion } from './utils/utm
 function App() {
   const location = useLocation();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
+  const clickCountRef = useRef(0);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Handle booking modal open
   const handleBookingOpen = () => {
@@ -27,36 +28,6 @@ function App() {
   const handleBookingClose = () => {
     setIsBookingOpen(false);
     window.dispatchEvent(new CustomEvent('modalClosed'));
-  };
-
-  // Handle triple-click to open admin dashboard
-  const handleTripleClick = () => {
-    const newCount = clickCount + 1;
-    console.log(`[APP-BOOKNOW] Click #${newCount} detected at ${new Date().toLocaleTimeString()}`);
-    console.log(`[APP-BOOKNOW] Current clickCount state: ${clickCount} → New: ${newCount}`);
-
-    setClickCount(newCount);
-
-    if (newCount === 3) {
-      console.log(`[APP-BOOKNOW] TRIPLE CLICK CONFIRMED! Execution path:`);
-      console.log(`[APP-BOOKNOW]   → Click counter reached 3`);
-      console.log(`[APP-BOOKNOW]   → Navigating to /admin route...`);
-      console.log(`[APP-BOOKNOW]   → Executing: window.location.href = '/admin'`);
-      window.location.href = '/admin';
-      setClickCount(0);
-    } else {
-      console.log(`[APP-BOOKNOW] Waiting for clicks... (${newCount}/3)`);
-    }
-
-    // Reset counter after 500ms
-    const resetTimer = setTimeout(() => {
-      if (newCount !== 3) {
-        console.log(`[APP-BOOKNOW] Reset timer fired: Counter reset from ${newCount} to 0`);
-        setClickCount(0);
-      }
-    }, 500);
-
-    return () => clearTimeout(resetTimer);
   };
 
   useEffect(() => {
@@ -103,21 +74,28 @@ function App() {
                   }
 
                   // Otherwise, use triple-click to access admin
-                  const newCount = clickCount + 1;
-                  setClickCount(newCount);
+                  clickCountRef.current += 1;
+                  const newCount = clickCountRef.current;
 
                   if (newCount === 3) {
-                    console.log('[EASTER-EGG] TRIPLE CLICK - NAVIGATING TO ADMIN');
+                    clickCountRef.current = 0;
+                    if (resetTimerRef.current) {
+                      clearTimeout(resetTimerRef.current);
+                      resetTimerRef.current = null;
+                    }
                     window.location.href = '/admin';
-                    setClickCount(0);
                   } else {
-                    console.log(`[EASTER-EGG] Click ${newCount}/3`);
-                  }
+                    // Clear existing timer
+                    if (resetTimerRef.current) {
+                      clearTimeout(resetTimerRef.current);
+                    }
 
-                  // Reset counter after 500ms
-                  setTimeout(() => {
-                    setClickCount(0);
-                  }, 500);
+                    // Set new timer to reset counter after 500ms
+                    resetTimerRef.current = setTimeout(() => {
+                      clickCountRef.current = 0;
+                      resetTimerRef.current = null;
+                    }, 500);
+                  }
                 }}
                 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer"
                 title={
@@ -186,26 +164,7 @@ function App() {
                 </Link>
                 <button
                   onClick={() => {
-                    console.log(
-                      `[APP-BOOKNOW-CLICK] onClick fired at ${new Date().toLocaleTimeString()}`
-                    );
-                    console.log(`[APP-BOOKNOW-CLICK] clickCount state before: ${clickCount}`);
-                    // Check if it's a triple-click or single click
-                    handleTripleClick();
-                    // Single click opens booking after a brief delay
-                    if (clickCount === 0) {
-                      console.log(
-                        `[APP-BOOKNOW-CLICK] Single click detected, opening booking modal...`
-                      );
-                      setTimeout(() => {
-                        console.log(`[APP-BOOKNOW-CLICK] Delayed booking open executing`);
-                        handleBookingOpen();
-                      }, 50);
-                    } else {
-                      console.log(
-                        `[APP-BOOKNOW-CLICK] Click count is ${clickCount}, not opening modal yet`
-                      );
-                    }
+                    handleBookingOpen();
                   }}
                   className="px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-lg font-semibold hover:from-rose-700 hover:to-rose-800 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 whitespace-nowrap text-xs sm:text-sm lg:text-base cursor-pointer"
                   aria-label="Book an appointment now"
