@@ -45,15 +45,15 @@ function App() {
       <div className="min-h-screen bg-white">
         {/* Navigation Header */}
         <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-rose-100">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-            <nav className="flex justify-between items-center">
+          <div className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 xl:py-6">
+            <nav className="flex justify-between items-center max-w-7xl mx-auto">
               <Link
                 to="/"
-                className="text-xl sm:text-2xl lg:text-3xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors"
+                className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap"
               >
                 Claire Hamilton
               </Link>
-              <div className="flex space-x-4 sm:space-x-6 lg:space-x-8 items-center text-sm sm:text-base lg:text-lg">
+              <div className="flex space-x-4 sm:space-x-6 lg:space-x-8 xl:space-x-10 items-center text-sm sm:text-base lg:text-lg xl:text-xl">
                 <Link
                   to="/about"
                   className={`font-medium transition-colors duration-300 focus:outline-none focus:text-rose-600 ${
@@ -125,53 +125,59 @@ function App() {
 
         {/* Footer - Hidden on home page to maximize photo impact */}
         {location.pathname !== '/' && (
-          <footer className="bg-gray-900 text-white py-12 px-4">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <footer className="bg-gray-900 text-white py-12 sm:py-16 lg:py-20 xl:py-24 px-4 sm:px-6 lg:px-8">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 mb-8 sm:mb-12 lg:mb-16">
                   <div>
-                    <h3 className="text-xl font-semibold mb-4">Claire Hamilton</h3>
-                    <p className="text-gray-300 mb-4">
+                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
+                      Claire Hamilton
+                    </h3>
+                    <p className="text-gray-300 mb-4 sm:text-base lg:text-lg">
                       Real curves. Real connection. Ultimate GFE.
                     </p>
-                    <p className="text-gray-300 text-sm">
+                    <p className="text-gray-300 text-sm sm:text-base">
                       Independent escort based in Canberra, Australia
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-4">Contact</h3>
-                    <div className="space-y-2 text-gray-300">
+                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
+                      Contact
+                    </h3>
+                    <div className="space-y-2 sm:space-y-3 text-gray-300 sm:text-base lg:text-lg">
                       <p>SMS Only: 0403 977 680</p>
                       <p>Email: contact.clairehamilton@proton.me</p>
                       <p>WhatsApp: +61 403 977 680</p>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-4">Follow Me</h3>
-                    <div className="space-y-2">
+                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
+                      Follow Me
+                    </h3>
+                    <div className="space-y-2 sm:space-y-3">
                       <a
                         href="#"
-                        className="block text-gray-300 hover:text-pink-400 transition-colors"
+                        className="block text-gray-300 hover:text-pink-400 transition-colors sm:text-base lg:text-lg"
                       >
                         Twitter
                       </a>
                       <a
                         href="#"
-                        className="block text-gray-300 hover:text-pink-400 transition-colors"
+                        className="block text-gray-300 hover:text-pink-400 transition-colors sm:text-base lg:text-lg"
                       >
                         OnlyFans (Free)
                       </a>
                       <a
                         href="#"
-                        className="block text-gray-300 hover:text-pink-400 transition-colors"
+                        className="block text-gray-300 hover:text-pink-400 transition-colors sm:text-base lg:text-lg"
                       >
                         Bluesky
                       </a>
                     </div>
                   </div>
                 </div>
-                <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-                  <p className="text-gray-400 text-sm">
+                <div className="border-t border-gray-700 pt-8 sm:pt-12 lg:pt-16 text-center">
+                  <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
                     © 2025 Claire Hamilton. All rights reserved. | Privacy & Discretion Guaranteed
                   </p>
                 </div>

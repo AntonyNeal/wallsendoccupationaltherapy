@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type MouseEvent } from 'react';
 import BookingModal from '../components/BookingModal';
 
 const heroImages = [
@@ -14,6 +14,8 @@ const heroImages = [
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,6 +27,33 @@ export default function Home() {
 
   const goToImage = (index: number) => {
     setCurrentImageIndex(index);
+  };
+
+  const handleIndicatorMouseDown = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    setIsDragging(true);
+    setDragStart(e.clientX);
+    goToImage(index);
+  };
+
+  const handleIndicatorMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+
+    const delta = e.clientX - dragStart;
+    if (Math.abs(delta) > 30) {
+      // Dragged more than 30px
+      if (delta > 0) {
+        // Dragged right - go to previous image
+        setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+      } else {
+        // Dragged left - go to next image
+        setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+      }
+      setDragStart(e.clientX);
+    }
+  };
+
+  const handleIndicatorMouseUp = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -51,15 +80,13 @@ export default function Home() {
             /* Hide scroll bar globally when on home page */
             html, body {
               overflow: hidden;
-              height: 100vh;
-              width: 100vw;
               margin: 0;
               padding: 0;
             }
 
             /* Ensure images cover the full area properly */
             .home-page img {
-              object-position: center top;
+              object-position: center;
             }
 
             /* Additional scroll bar hiding */
@@ -75,9 +102,9 @@ export default function Home() {
         </style>
       </Helmet>
 
-      <div className="home-page bg-white">
+      <div className="home-page bg-black w-screen h-screen overflow-hidden relative">
         {/* Full-Screen Hero Section with Photo Carousel */}
-        <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
+        <section className="relative w-full h-full overflow-hidden flex items-center justify-center">
           {/* Carousel Container */}
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             {heroImages.map((image, index) => {
@@ -111,9 +138,9 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-rose-900/20 to-black/40" />
 
           {/* Content Overlay - Elegant and readable */}
-          <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8">
+          <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center h-full">
             <h1
-              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light mb-4 sm:mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] leading-none tracking-tight animate-pulse"
+              className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-4 sm:mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] leading-none tracking-tight animate-pulse"
               style={{
                 textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)',
                 fontFamily: '"Playfair Display", serif',
@@ -123,7 +150,7 @@ export default function Home() {
               Claire Hamilton
             </h1>
             <p
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] mb-6 sm:mb-8 md:mb-10 max-w-4xl mx-auto leading-relaxed font-light"
+              className="text-xl sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] mb-6 sm:mb-8 md:mb-10 max-w-4xl mx-auto leading-relaxed font-light"
               style={{
                 textShadow: '1px 1px 6px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5)',
                 fontFamily: '"Crimson Text", serif',
@@ -134,7 +161,7 @@ export default function Home() {
             <div className="flex gap-3 sm:gap-4 md:gap-6 justify-center flex-wrap px-4 mb-8 sm:mb-12">
               <button
                 onClick={() => setIsBookingOpen(true)}
-                className="group relative px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-red-800/60 to-red-900/70 text-white rounded-lg text-base sm:text-lg md:text-xl font-bold tracking-wide hover:shadow-2xl hover:from-red-800/80 hover:to-red-900/90 transition-all duration-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-offset-2 backdrop-blur-sm border border-red-700/50"
+                className="group relative px-6 sm:px-7 md:px-8 lg:px-10 py-3 sm:py-3 md:py-4 bg-gradient-to-r from-red-800/60 to-red-900/70 text-white rounded-lg text-base sm:text-lg md:text-lg font-bold tracking-wide hover:shadow-2xl hover:from-red-800/80 hover:to-red-900/90 transition-all duration-500 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-offset-2 backdrop-blur-sm border border-red-700/50"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
                   boxShadow:
@@ -149,7 +176,7 @@ export default function Home() {
               </button>
               <Link
                 to="/gallery"
-                className="group px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-4 md:py-5 border-2 border-rose-300 text-rose-100 rounded-lg text-base sm:text-lg md:text-xl font-semibold tracking-wide hover:bg-rose-50/20 hover:border-rose-200 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-rose-400 focus:ring-offset-2 backdrop-blur-sm"
+                className="group px-6 sm:px-7 md:px-8 lg:px-10 py-3 sm:py-3 md:py-4 border-2 border-rose-300 text-rose-100 rounded-lg text-base sm:text-lg md:text-lg font-semibold tracking-wide hover:bg-rose-50/20 hover:border-rose-200 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-rose-400 focus:ring-offset-2 backdrop-blur-sm"
                 aria-label="View photo gallery"
               >
                 View Gallery
@@ -159,23 +186,31 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
-          {/* Carousel Indicators - Now Clickable */}
-          <div className="absolute bottom-4 sm:bottom-6 z-20 flex gap-3 justify-center w-full px-4">
-            {heroImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToImage(index)}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer hover:scale-125 focus:outline-none focus:ring-2 focus:ring-white/50 border-2 ${
-                  index === currentImageIndex
-                    ? 'bg-white/20 border-white w-4 sm:w-6'
-                    : 'bg-transparent border-white/60 w-2 hover:bg-white/10 hover:border-white'
-                }`}
-                aria-label={`Go to image ${index + 1}`}
-              />
-            ))}
-          </div>
         </section>
+
+        {/* Carousel Indicators - Large, Visible with Strong Colors */}
+        <div
+          className="absolute bottom-6 sm:bottom-8 md:bottom-10 left-0 right-0 z-50 flex gap-4 sm:gap-5 justify-center w-full px-4 select-none pointer-events-auto"
+          onMouseMove={handleIndicatorMouseMove}
+          onMouseUp={handleIndicatorMouseUp}
+          onMouseLeave={handleIndicatorMouseUp}
+        >
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onMouseDown={(e) => handleIndicatorMouseDown(e, index)}
+              className={`rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white flex-shrink-0 ${
+                index === currentImageIndex
+                  ? 'bg-yellow-300 w-6 h-6 sm:w-7 sm:h-7 border-3 border-white'
+                  : 'bg-white w-5 h-5 sm:w-6 sm:h-6 border-2 border-white hover:bg-yellow-100'
+              }`}
+              style={{
+                boxShadow: '0 4px 12px rgba(0,0,0,1), 0 0 8px rgba(255,255,255,0.8)',
+              }}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
