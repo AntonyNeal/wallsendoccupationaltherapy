@@ -188,9 +188,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Carousel Indicators - Large, Visible with Strong Colors */}
+        {/* Carousel Indicators - Fixed positioning for guaranteed visibility */}
         <div
-          className="absolute bottom-6 sm:bottom-8 md:bottom-10 left-0 right-0 z-50 flex gap-4 sm:gap-5 justify-center w-full px-4 select-none pointer-events-auto"
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4 sm:gap-5 justify-center select-none pointer-events-auto"
           onMouseMove={handleIndicatorMouseMove}
           onMouseUp={handleIndicatorMouseUp}
           onMouseLeave={handleIndicatorMouseUp}
