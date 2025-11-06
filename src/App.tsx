@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Home from './pages/Home';
@@ -15,8 +15,6 @@ import { initializeSession, registerSession, trackConversion } from './utils/utm
 function App() {
   const location = useLocation();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const clickCountRef = useRef(0);
-  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Handle booking modal open
   const handleBookingOpen = () => {
@@ -73,35 +71,12 @@ function App() {
                     return;
                   }
 
-                  // Otherwise, use triple-click to access admin
-                  clickCountRef.current += 1;
-                  const newCount = clickCountRef.current;
-
-                  if (newCount === 3) {
-                    clickCountRef.current = 0;
-                    if (resetTimerRef.current) {
-                      clearTimeout(resetTimerRef.current);
-                      resetTimerRef.current = null;
-                    }
-                    window.location.href = '/admin';
-                  } else {
-                    // Clear existing timer
-                    if (resetTimerRef.current) {
-                      clearTimeout(resetTimerRef.current);
-                    }
-
-                    // Set new timer to reset counter after 500ms
-                    resetTimerRef.current = setTimeout(() => {
-                      clickCountRef.current = 0;
-                      resetTimerRef.current = null;
-                    }, 500);
-                  }
+                  // Single click to access admin
+                  window.location.href = '/admin';
                 }}
                 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-light text-gray-900 tracking-tight hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer"
                 title={
-                  location.pathname === '/admin'
-                    ? 'Click to return home'
-                    : 'Triple-click for surprise!'
+                  location.pathname === '/admin' ? 'Click to return home' : 'Click for admin access'
                 }
               >
                 Claire Hamilton
