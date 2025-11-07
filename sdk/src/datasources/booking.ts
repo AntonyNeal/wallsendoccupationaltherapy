@@ -50,7 +50,10 @@ export class BookingDataSource {
   /**
    * Update booking status
    */
-  static async updateStatus(bookingId: string | number, update: UpdateStatusRequest): Promise<Booking> {
+  static async updateStatus(
+    bookingId: string | number,
+    update: UpdateStatusRequest
+  ): Promise<Booking> {
     const response = await this.client.patch<ApiResponse<Booking>>(
       `/bookings/${bookingId}/status`,
       update

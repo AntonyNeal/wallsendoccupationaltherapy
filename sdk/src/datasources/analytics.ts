@@ -7,6 +7,8 @@ import { AnalyticsSummary, ApiResponse } from '../types';
 
 interface CreateSessionRequest {
   tenantId: string | number;
+  sessionToken?: string;
+  fingerprint?: string;
   userAgent?: string;
   ipAddress?: string;
   referrer?: string;
@@ -15,37 +17,57 @@ interface CreateSessionRequest {
   utmCampaign?: string;
   utmTerm?: string;
   utmContent?: string;
+  landingPage?: string;
+  deviceType?: string;
+  browser?: string;
+  browserVersion?: string;
+  os?: string;
+  osVersion?: string;
 }
 
 interface SessionResponse {
-  sessionId: string;
-  tenantId: number;
+  id: string;
+  sessionToken: string;
+  pageViews: number;
   createdAt: string;
+  isNew: boolean;
 }
 
 interface CreateEventRequest {
-  sessionId: string;
+  sessionId?: string;
+  tenantId: string | number;
   eventType: string;
-  eventCategory?: string;
-  eventLabel?: string;
-  eventValue?: number;
+  eventData?: Record<string, unknown>;
   pageUrl?: string;
-  metadata?: Record<string, unknown>;
+  pageTitle?: string;
 }
 
 export class AnalyticsDataSource {
   private static client = new ApiClient();
   private static currentSessionId: string | null = null;
+  private static currentSessionToken: string | null = null;
+
+  /**
+   * Generate a unique session token
+   */
+  private static generateSessionToken(): string {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  }
 
   /**
    * Create a new analytics session
    */
   static async createSession(data: CreateSessionRequest): Promise<SessionResponse> {
-    const response = await this.client.post<ApiResponse<SessionResponse>>(
-      '/analytics/sessions',
-      data
-    );
-    this.currentSessionId = response.data.sessionId;
+    // Generate session token if not provided
+    const sessionToken = data.sessionToken || this.generateSessionToken();
+
+    const response = await this.client.post<ApiResponse<SessionResponse>>('/analytics/sessions', {
+      ...data,
+      sessionToken,
+    });
+
+    this.currentSessionId = response.data.id;
+    this.currentSessionToken = response.data.sessionToken;
     return response.data;
   }
 
@@ -61,10 +83,9 @@ export class AnalyticsDataSource {
    */
   static async track(
     eventType: string,
-    eventCategory?: string,
-    eventLabel?: string,
-    eventValue?: number,
-    metadata?: Record<string, unknown>
+    eventData?: Record<string, unknown>,
+    pageUrl?: string,
+    pageTitle?: string
   ): Promise<void> {
     if (!this.currentSessionId) {
       console.warn('No active session. Call createSession() first.');
@@ -73,12 +94,11 @@ export class AnalyticsDataSource {
 
     await this.trackEvent({
       sessionId: this.currentSessionId,
+      tenantId: '', // Will be set by backend from session
       eventType,
-      eventCategory,
-      eventLabel,
-      eventValue,
-      pageUrl: window.location.href,
-      metadata,
+      eventData,
+      pageUrl: pageUrl || (typeof window !== 'undefined' ? window.location.href : undefined),
+      pageTitle: pageTitle || (typeof document !== 'undefined' ? document.title : undefined),
     });
   }
 
@@ -114,18 +134,24 @@ export class AnalyticsDataSource {
   /**
    * Initialize session tracking automatically
    */
-  static async initialize(tenantId: string | number, utmParams?: Record<string, string>): Promise<string> {
+  static async initialize(
+    tenantId: string | number,
+    utmParams?: Record<string, string>
+  ): Promise<string> {
     const session = await this.createSession({
       tenantId,
-      userAgent: navigator.userAgent,
-      referrer: document.referrer || undefined,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+      referrer: typeof document !== 'undefined' ? document.referrer || undefined : undefined,
+      landingPage: typeof window !== 'undefined' ? window.location.href : undefined,
       ...utmParams,
     });
 
     // Track page view
-    await this.track('page_view', 'engagement', window.location.pathname);
+    await this.track('page_view', {
+      page: typeof window !== 'undefined' ? window.location.pathname : undefined,
+    });
 
-    return session.sessionId;
+    return session.id;
   }
 
   /**
@@ -133,5 +159,12 @@ export class AnalyticsDataSource {
    */
   static getSessionId(): string | null {
     return this.currentSessionId;
+  }
+
+  /**
+   * Get current session token
+   */
+  static getSessionToken(): string | null {
+    return this.currentSessionToken;
   }
 }

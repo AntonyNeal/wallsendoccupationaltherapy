@@ -2,9 +2,61 @@
 
 A modern, elegant companion website built with React, TypeScript, and DigitalOcean cloud infrastructure.
 
+---
+
+## 🎯 Current State vs. Future Vision
+
+> **Last Verified**: November 7, 2025 via DigitalOcean API  
+> **Full Details**: See [INFRASTRUCTURE-ACTUAL-STATE.md](./INFRASTRUCTURE-ACTUAL-STATE.md)
+
+### ✅ Currently Deployed (Production)
+
+**Live Site**: https://clairehamilton.vip
+
+**Architecture**:
+
+- **Frontend**: React 18.3 SPA deployed via DigitalOcean App Platform
+- **Backend**: Express.js API serving `/api/*` routes
+- **Database**: PostgreSQL 16 (1GB, managed, Sydney region)
+- **Deployment**: Single monolithic app with 2 services (api + frontend)
+- **Region**: Sydney, Australia
+- **Status**: Active and operational
+
+**What's Working**:
+
+- ✅ React SPA with Tailwind CSS
+- ✅ Express.js API routes
+- ✅ PostgreSQL database online
+- ✅ Cloudflare DNS + SSL
+- ✅ Single-tenant Claire Hamilton site
+
+**What's NOT Deployed** (despite documentation):
+
+- ❌ DigitalOcean Functions (0 namespaces - using Express.js instead)
+- ❌ Spaces CDN (not created - serving assets from app)
+- ❌ Multi-tenant subdomain routing (code ready, not deployed)
+- ❌ Terraform-managed infrastructure (configs exist, not applied)
+- ❌ prebooking.pro domain (registered but no DNS records)
+
+### 🔮 Future Vision (Planned)
+
+The codebase contains extensive multi-tenant platform infrastructure designed for future expansion:
+
+- 📋 **Multi-Tenant Platform**: `*.prebooking.pro` subdomain routing for multiple companions
+- 📋 **DigitalOcean Functions**: Serverless architecture (code written, ready to deploy)
+- 📋 **Spaces + CDN**: Global asset delivery
+- 📋 **Terraform IaC**: Infrastructure as Code for automated provisioning
+- 📋 **A/B Testing Framework**: Photo variant testing and analytics
+- 📋 **Advanced Analytics**: Social media correlation, conversion funnels
+
+**Documentation Note**: Many documents (MULTI-TENANT-ARCHITECTURE.md, BOOKING_SYSTEM_GUIDE.md) describe this future vision, not the current production state.
+
+---
+
 ## ✨ Key Features
 
 ### Backend Infrastructure (Phase 1 - 40% Complete)
+
 - ✅ **PostgreSQL Database Schema** - Complete with 8 tables, indexes, triggers, constraints
 - ✅ **UTM Attribution Tracking** - Frontend session management with browser fingerprinting
 - ✅ **Booking API** - POST /api/bookings with validation, duplicate detection, email notifications
@@ -15,6 +67,7 @@ A modern, elegant companion website built with React, TypeScript, and DigitalOce
 - ⏳ **Privacy Analytics** - PostHog/Plausible integration (Phase 2)
 
 ### Frontend Features
+
 - Responsive booking form with validation
 - Real-time UTM parameter extraction
 - Session persistence across browser tabs
@@ -38,16 +91,16 @@ A modern, elegant companion website built with React, TypeScript, and DigitalOce
 ### Backend
 
 - **Runtime**: Node.js 20+
-- **Framework**: Express.js
-- **Serverless**: DigitalOcean Functions
-- **Database**: PostgreSQL (Managed)
+- **Framework**: Express.js ✅ (Production)
+- **Database**: PostgreSQL 16 Managed ✅ (Production)
+- **Serverless**: DigitalOcean Functions 📋 (Planned - code ready)
 
 ### Infrastructure
 
-- **Hosting**: DigitalOcean App Platform
-- **CDN**: DigitalOcean Spaces CDN
-- **Functions**: DigitalOcean Serverless Functions
-- **IaC**: Terraform
+- **Hosting**: DigitalOcean App Platform ✅ (Sydney region)
+- **Architecture**: Monolithic (api + frontend services)
+- **CDN**: DigitalOcean Spaces 📋 (Planned - Terraform configs ready)
+- **IaC**: Terraform 📋 (Configs written, not yet applied)
 
 ## 📁 Project Structure
 
@@ -134,6 +187,7 @@ VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 **For a complete step-by-step deployment guide, see [DEPLOYMENT-GUIDE.md](./DEPLOYMENT-GUIDE.md)**
 
 Quick summary:
+
 1. Create PostgreSQL 15 database on DigitalOcean
 2. Deploy schema: `psql "your_connection_string" -f db/schema.sql`
 3. Configure environment variables in DigitalOcean App Platform
@@ -147,6 +201,7 @@ Expected time: **30-45 minutes**
 **For comprehensive testing procedures, see [TESTING-GUIDE.md](./TESTING-GUIDE.md)**
 
 Quick verification:
+
 1. POST /api/bookings - Create a test booking
 2. Check inbox - Verify confirmation emails sent
 3. GET /api/analytics/bookings - Query conversion data
@@ -299,6 +354,36 @@ terraform plan -var="do_token=YOUR_TOKEN"
 terraform apply -var="do_token=YOUR_TOKEN"
 ```
 
+## 🤖 DigitalOcean MCP Integration
+
+**NEW**: Manage your DigitalOcean infrastructure directly through GitHub Copilot!
+
+The Model Context Protocol (MCP) integration allows you to interact with DigitalOcean services using natural language in Copilot Chat.
+
+### Quick Setup
+
+1. Get your API token: https://cloud.digitalocean.com/account/api/tokens
+2. Set environment variable:
+   ```powershell
+   [System.Environment]::SetEnvironmentVariable('DO_API_TOKEN', 'your_token', 'User')
+   ```
+3. Restart VS Code
+
+### Usage
+
+Ask Copilot about your infrastructure:
+
+```
+@workspace List my DigitalOcean apps
+@workspace Show my database connection details
+@workspace Add SSH key named "mykey"
+```
+
+📚 **Full documentation**: See `mcp-server/README.md`  
+⚡ **Quick reference**: See `mcp-server/QUICK-REFERENCE.md`
+
+---
+
 ## 🔧 Environment Variables
 
 ### Frontend
@@ -317,6 +402,12 @@ terraform apply -var="do_token=YOUR_TOKEN"
 | `DATABASE_URL`    | PostgreSQL connection string         | Yes      |
 | `ALLOWED_ORIGINS` | CORS allowed origins                 | Yes      |
 | `NODE_ENV`        | Environment (development/production) | Yes      |
+
+### MCP Server
+
+| Variable       | Description            | Required |
+| -------------- | ---------------------- | -------- |
+| `DO_API_TOKEN` | DigitalOcean API token | Yes      |
 
 ## 📦 CI/CD
 
@@ -403,6 +494,8 @@ This project is licensed under the ISC License.
 
 ### Project Documentation
 
+- **[mcp-server/README.md](./mcp-server/README.md)** - Complete guide to DigitalOcean MCP integration with Copilot
+- **[mcp-server/QUICK-REFERENCE.md](./mcp-server/QUICK-REFERENCE.md)** - Quick reference for MCP commands
 - **[DEPLOYMENT-GUIDE.md](./DEPLOYMENT-GUIDE.md)** - Complete step-by-step guide to deploy backend to DigitalOcean (30-45 min)
 - **[TESTING-GUIDE.md](./TESTING-GUIDE.md)** - Comprehensive testing procedures for all API endpoints and features
 - **[BACKEND-IMPLEMENTATION.md](./BACKEND-IMPLEMENTATION.md)** - Backend architecture, 40% Phase 1 completion status, and remaining work

@@ -1,0 +1,29 @@
+/* Custom styles for [TENANT_NAME] */
+
+/*
+ * Use this file for any custom CSS that goes beyond the theme configuration.
+ * CSS variables from theme.config.ts are available as:
+ * - var(--color-primary)
+ * - var(--color-secondary)
+ * - var(--color-accent)
+ * - var(--font-heading)
+ * - var(--font-body)
+ */
+
+/* Example: Custom hero section styling */
+.custom-hero {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+}
+
+/* Example: Custom button hover effect */
+.custom-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Example: Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .custom-hero {
+    min-height: 60vh;
+  }
+}
