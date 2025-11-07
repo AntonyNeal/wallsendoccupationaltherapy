@@ -35,6 +35,7 @@ clairehamilton.vip             → Custom domain for Claire
 ### Required DNS Records (Namecheap/Cloudflare):
 
 #### For Platform Root:
+
 ```
 Type: A Record
 Host: @
@@ -43,6 +44,7 @@ TTL: Automatic
 ```
 
 #### For Wildcard Subdomains:
+
 ```
 Type: A Record
 Host: *
@@ -51,6 +53,7 @@ TTL: Automatic
 ```
 
 #### Alternative (CNAME):
+
 ```
 Type: CNAME
 Host: @
@@ -102,13 +105,13 @@ Added platform domain detection:
 
 ```typescript
 const platformSubdomains = [
-  '', 
-  'www', 
-  'companionconnect', 
-  'platform', 
-  'admin', 
-  'prebooking', 
-  'avaliable'
+  '',
+  'www',
+  'companionconnect',
+  'platform',
+  'admin',
+  'prebooking',
+  'avaliable',
 ];
 ```
 
@@ -131,6 +134,7 @@ constructor(baseURL: string = 'https://avaliable.pro/api') {
 You've already registered `avaliable.pro` (expires Nov 6, 2026).
 
 **Next Steps:**
+
 1. Go to Namecheap → avaliable.pro → Advanced DNS
 2. Add DNS records (see above)
 3. Wait for DNS propagation (5-60 minutes)
@@ -182,12 +186,14 @@ https://claire.avaliable.pro
 ## Testing Checklist
 
 ### DNS Tests:
+
 - [ ] `avaliable.pro` resolves to DigitalOcean
 - [ ] `*.avaliable.pro` resolves to DigitalOcean
 - [ ] SSL certificate auto-provisioned
 - [ ] Both HTTP and HTTPS work
 
 ### API Tests:
+
 ```bash
 # Test tenant API
 curl https://avaliable.pro/api/tenants/claire
@@ -200,6 +206,7 @@ curl https://claire.avaliable.pro/api/tenants/claire
 ```
 
 ### Browser Tests:
+
 - [ ] Platform root loads: `https://avaliable.pro`
 - [ ] Tenant subdomain loads: `https://claire.avaliable.pro`
 - [ ] CORS allows API requests
@@ -211,16 +218,19 @@ curl https://claire.avaliable.pro/api/tenants/claire
 ## Migration Plan
 
 ### Phase 1: Dual Domain Support (Current) ✅
+
 - Both `avaliable.pro` and `prebooking.pro` work
 - No breaking changes to existing users
 - Code supports all domains
 
 ### Phase 2: Primary Domain Transition (1-2 weeks)
+
 - Update all documentation to use `avaliable.pro`
 - Update marketing materials
 - Add redirects from legacy domains
 
 ### Phase 3: Legacy Domain Deprecation (3-6 months)
+
 - Notify users of domain change
 - Set up permanent redirects (301)
 - Update all tenant configurations
@@ -230,6 +240,7 @@ curl https://claire.avaliable.pro/api/tenants/claire
 ## URL Structure
 
 ### Platform URLs:
+
 ```
 https://avaliable.pro                     → Platform home/showcase
 https://avaliable.pro/api/*              → API endpoints
@@ -237,6 +248,7 @@ https://avaliable.pro/api/health         → Health check
 ```
 
 ### Tenant URLs:
+
 ```
 https://claire.avaliable.pro             → Claire's booking site
 https://sophie.avaliable.pro             → Sophie's booking site (when onboarded)
@@ -244,6 +256,7 @@ https://jessica.avaliable.pro            → Jessica's booking site (when onboar
 ```
 
 ### Custom Domains (Optional):
+
 ```
 https://clairehamilton.vip               → Claire's custom domain
 → CNAME to claire.avaliable.pro
@@ -253,25 +266,27 @@ https://clairehamilton.vip               → Claire's custom domain
 
 ## Tenant Subdomain Examples
 
-| Tenant Name | Subdomain | Full URL |
-|-------------|-----------|----------|
-| Claire Hamilton | `claire` | `https://claire.avaliable.pro` |
-| Sophie Chen | `sophie` | `https://sophie.avaliable.pro` |
-| Jessica Moore | `jessica` | `https://jessica.avaliable.pro` |
-| Emma Watson | `emma` | `https://emma.avaliable.pro` |
-| Olivia Davis | `olivia` | `https://olivia.avaliable.pro` |
+| Tenant Name     | Subdomain | Full URL                        |
+| --------------- | --------- | ------------------------------- |
+| Claire Hamilton | `claire`  | `https://claire.avaliable.pro`  |
+| Sophie Chen     | `sophie`  | `https://sophie.avaliable.pro`  |
+| Jessica Moore   | `jessica` | `https://jessica.avaliable.pro` |
+| Emma Watson     | `emma`    | `https://emma.avaliable.pro`    |
+| Olivia Davis    | `olivia`  | `https://olivia.avaliable.pro`  |
 
 ---
 
 ## SDK Usage with New Domain
 
 ### Browser (CDN):
+
 ```html
 <!-- Will be updated after CDN setup -->
 <script src="https://cdn.avaliable.pro/companion-sdk@1.0.0.js"></script>
 ```
 
 ### npm:
+
 ```javascript
 import { TenantDataSource } from '@clairehamilton/companion-sdk';
 
@@ -280,6 +295,7 @@ const tenant = await TenantDataSource.getBySubdomain('claire');
 ```
 
 ### API Client:
+
 ```typescript
 // Default API base URL is now avaliable.pro
 const client = new ApiClient(); // Uses https://avaliable.pro/api
@@ -293,6 +309,7 @@ const client = new ApiClient('https://custom.domain/api');
 ## Verification Commands
 
 ### PowerShell:
+
 ```powershell
 # Test DNS
 nslookup avaliable.pro
@@ -308,6 +325,7 @@ Start-Process "https://claire.avaliable.pro"
 ```
 
 ### Bash:
+
 ```bash
 # Test DNS
 dig avaliable.pro
@@ -332,6 +350,7 @@ For better performance and DDoS protection:
    - Update Namecheap nameservers to Cloudflare's
 
 2. **DNS Records:**
+
    ```
    Type: CNAME
    Name: @
@@ -359,16 +378,19 @@ For better performance and DDoS protection:
 ## Security Considerations
 
 ### SSL/TLS:
+
 - ✅ Automatic Let's Encrypt certificates via DigitalOcean
 - ✅ Wildcard certificate for `*.avaliable.pro`
 - ✅ Force HTTPS redirect
 
 ### CORS:
+
 - ✅ Strict origin checking
 - ✅ Credentials support enabled
 - ✅ Pattern-based domain matching
 
 ### WHOIS Privacy:
+
 - ✅ Enabled on avaliable.pro (auto-renew: ON)
 
 ---
@@ -376,12 +398,14 @@ For better performance and DDoS protection:
 ## Support & Documentation
 
 ### Internal Docs:
+
 - `PREBOOKING-PRO-SETUP.md` - Legacy prebooking.pro setup
 - `MULTI-TENANT-ARCHITECTURE.md` - Multi-tenant system design
 - `DNS-SETUP-GUIDE.md` - DNS configuration guide
 - `DIGITALOCEAN-DOMAIN-SETUP.md` - DigitalOcean domain setup
 
 ### External Links:
+
 - Domain registrar: Namecheap
 - Hosting: DigitalOcean App Platform (Sydney)
 - CDN: Cloudflare (optional)
@@ -391,6 +415,7 @@ For better performance and DDoS protection:
 ## Troubleshooting
 
 ### DNS Not Resolving:
+
 ```bash
 # Check nameservers
 nslookup -type=NS avaliable.pro
@@ -403,11 +428,13 @@ sudo dscacheutil -flushcache
 ```
 
 ### CORS Errors:
+
 - Check browser console for specific error
 - Verify domain in allowed patterns (api/server.js)
 - Check if subdomain matches pattern
 
 ### SSL Certificate Issues:
+
 - Wait for auto-provisioning (5-15 minutes)
 - Check DigitalOcean App Platform SSL status
 - Verify DNS is pointing correctly

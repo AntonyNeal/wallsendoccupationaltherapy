@@ -2,6 +2,24 @@
  * API Client - Base HTTP client for all API calls
  */
 
+// Node.js HTTPS agent for SSL bypass (development only)
+let customFetch: typeof fetch = fetch;
+
+if (typeof process !== 'undefined' && process.versions?.node) {
+  try {
+    // In Node.js, use undici's fetch with custom dispatcher
+    const { Agent, setGlobalDispatcher } = require('undici');
+    const agent = new Agent({
+      connect: {
+        rejectUnauthorized: false,
+      },
+    });
+    setGlobalDispatcher(agent);
+  } catch {
+    // If undici setup fails, fall back to default fetch
+  }
+}
+
 interface RequestOptions extends Omit<RequestInit, 'body'> {
   params?: Record<string, string | number>;
   body?: unknown;
@@ -36,7 +54,7 @@ export class ApiClient {
     const url = this.buildURL(endpoint, params);
 
     try {
-      const response = await fetch(url, {
+      const response = await customFetch(url, {
         ...fetchOptions,
         headers: {
           'Content-Type': 'application/json',

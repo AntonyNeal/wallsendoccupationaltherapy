@@ -321,7 +321,16 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* SECTION 4: CALL-TO-ACTION */}
+        {/* SECTION 4: SDK DIAGNOSTICS */}
+        <div className="mb-20">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 flex items-center gap-3">
+            <span>🧪</span> SDK DIAGNOSTICS
+          </h2>
+          <p className="text-gray-400 mb-8 text-lg">Test API connectivity and SDK functionality</p>
+          <SDKTests />
+        </div>
+
+        {/* SECTION 5: CALL-TO-ACTION */}
         <div className="bg-gradient-to-br from-purple-900 to-blue-900 rounded-2xl overflow-hidden shadow-2xl p-8 sm:p-12 text-center">
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Get Started?</h3>
           <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto">
@@ -346,6 +355,251 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// SDK Tests Component
+interface TestResult {
+  name: string;
+  status: 'running' | 'success' | 'error';
+  message: string;
+}
+
+interface Location {
+  city: string;
+  country: string;
+}
+
+interface Slot {
+  status: string;
+}
+
+function SDKTests() {
+  const [isRunning, setIsRunning] = useState(false);
+  const [results, setResults] = useState<TestResult[]>([]);
+
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://avaliable.pro/api';
+
+  const runTests = async () => {
+    setIsRunning(true);
+    setResults([]);
+
+    // Test 1: Tenant API
+    await testTenant();
+  };
+
+  const testTenant = async () => {
+    const testName = 'Tenant API';
+    setResults((prev) => [...prev, { name: testName, status: 'running', message: 'Testing...' }]);
+
+    try {
+      const res = await fetch(`${API_BASE}/tenants/claire`);
+      const json = await res.json();
+      const id = json.data.id;
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'success' as const,
+                message: `✅ SUCCESS\nTenant: ${json.data.name}\nID: ${id}\nSubdomain: ${json.data.subdomain}`,
+              }
+            : r
+        )
+      );
+
+      // Run remaining tests
+      await testLocations(id);
+      await testAvailability(id);
+      await testAnalytics(id);
+    } catch (error) {
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'error' as const,
+                message: `❌ FAILED\n${error instanceof Error ? error.message : String(error)}`,
+              }
+            : r
+        )
+      );
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  const testLocations = async (id: string) => {
+    const testName = 'Locations API';
+    setResults((prev) => [...prev, { name: testName, status: 'running', message: 'Testing...' }]);
+
+    try {
+      const res = await fetch(`${API_BASE}/locations/tenant/${id}`);
+      const json = await res.json();
+      const locations = json.data as Location[];
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'success' as const,
+                message: `✅ SUCCESS\nFound ${locations.length} locations\n${locations.map((l) => `- ${l.city}, ${l.country}`).join('\n')}`,
+              }
+            : r
+        )
+      );
+    } catch (error) {
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'error' as const,
+                message: `❌ FAILED\n${error instanceof Error ? error.message : String(error)}`,
+              }
+            : r
+        )
+      );
+    }
+  };
+
+  const testAvailability = async (id: string) => {
+    const testName = 'Availability API';
+    setResults((prev) => [...prev, { name: testName, status: 'running', message: 'Testing...' }]);
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/availability/${id}?startDate=2025-12-01&endDate=2025-12-31`
+      );
+      const json = await res.json();
+      const slots = json.data as Slot[];
+
+      const available = slots.filter((s) => s.status === 'available').length;
+      const booked = slots.filter((s) => s.status === 'booked').length;
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'success' as const,
+                message: `✅ SUCCESS\nTotal slots: ${slots.length}\nAvailable: ${available}\nBooked: ${booked}`,
+              }
+            : r
+        )
+      );
+    } catch (error) {
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'error' as const,
+                message: `❌ FAILED\n${error instanceof Error ? error.message : String(error)}`,
+              }
+            : r
+        )
+      );
+    }
+  };
+
+  const testAnalytics = async (id: string) => {
+    const testName = 'Analytics API';
+    setResults((prev) => [...prev, { name: testName, status: 'running', message: 'Testing...' }]);
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/analytics/${id}?startDate=2025-01-01&endDate=2025-12-31`
+      );
+      const json = await res.json();
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'success' as const,
+                message: `✅ SUCCESS\nData: ${JSON.stringify(json.data, null, 2)}`,
+              }
+            : r
+        )
+      );
+    } catch (error) {
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === testName
+            ? {
+                name: testName,
+                status: 'error' as const,
+                message: `❌ FAILED\n${error instanceof Error ? error.message : String(error)}`,
+              }
+            : r
+        )
+      );
+    }
+  };
+
+  const successCount = results.filter((r) => r.status === 'success').length;
+  const failedCount = results.filter((r) => r.status === 'error').length;
+  const totalTests = results.length;
+
+  return (
+    <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h3 className="text-xl font-bold text-white mb-2">API Endpoint Tests</h3>
+          <p className="text-slate-400 text-sm">Testing: {API_BASE}</p>
+        </div>
+        <button
+          onClick={runTests}
+          disabled={isRunning}
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/50 disabled:cursor-not-allowed"
+        >
+          {isRunning ? '⏳ Running Tests...' : '▶️ Run All Tests'}
+        </button>
+      </div>
+
+      {results.length > 0 && (
+        <>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="bg-slate-900/50 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-blue-400">{totalTests}</div>
+              <div className="text-sm text-slate-400">Total Tests</div>
+            </div>
+            <div className="bg-slate-900/50 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-green-400">{successCount}</div>
+              <div className="text-sm text-slate-400">Passed</div>
+            </div>
+            <div className="bg-slate-900/50 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-red-400">{failedCount}</div>
+              <div className="text-sm text-slate-400">Failed</div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {results.map((result, idx) => (
+              <div
+                key={idx}
+                className={`border-l-4 ${
+                  result.status === 'success'
+                    ? 'border-green-500 bg-green-900/20'
+                    : result.status === 'error'
+                      ? 'border-red-500 bg-red-900/20'
+                      : 'border-yellow-500 bg-yellow-900/20'
+                } rounded-lg p-4`}
+              >
+                <h4 className="text-lg font-bold text-white mb-2">{result.name}</h4>
+                <pre className="text-sm text-slate-300 whitespace-pre-wrap font-mono bg-slate-900/50 p-3 rounded">
+                  {result.message}
+                </pre>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

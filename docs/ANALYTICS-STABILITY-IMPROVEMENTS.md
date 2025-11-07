@@ -9,6 +9,7 @@
 ## Problem Statement
 
 The analytics summary endpoint (`GET /api/analytics/:tenantId`) was experiencing:
+
 - Database connection timeouts (2-second timeout too short)
 - Hanging connections on complex analytics queries
 - No retry logic for transient failures
@@ -20,6 +21,7 @@ The analytics summary endpoint (`GET /api/analytics/:tenantId`) was experiencing
 ### 1. Query Optimization (analyticsController.js) ✅
 
 **Changes:**
+
 - Added 15-second query timeout with Promise.race()
 - Set PostgreSQL statement_timeout to 12 seconds
 - Optimized queries using FILTER clauses instead of subqueries
@@ -28,11 +30,13 @@ The analytics summary endpoint (`GET /api/analytics/:tenantId`) was experiencing
 - Removed expensive avg_time_to_booking calculation
 
 **Impact:**
+
 - Queries that took 30+ seconds now complete in 2-5 seconds
 - Prevents hanging connections
 - Graceful timeout handling with user-friendly errors
 
 **Code Example:**
+
 ```javascript
 const timeout = new Promise((_, reject) =>
   setTimeout(() => reject(new Error('Analytics query timeout')), QUERY_TIMEOUT_MS)
@@ -49,6 +53,7 @@ const analyticsData = await Promise.race([
 ### 2. Database Connection Pool Improvements (utils/db.js) ✅
 
 **Changes:**
+
 - Increased connection timeout from 2s to 10s (for high-latency DigitalOcean Sydney)
 - Added retry logic with exponential backoff (3 retries)
 - Enabled TCP keepalive
@@ -58,6 +63,7 @@ const analyticsData = await Promise.race([
 - Graceful shutdown handlers
 
 **Configuration:**
+
 ```javascript
 {
   connectionTimeoutMillis: 10000,  // Was 2000
@@ -68,6 +74,7 @@ const analyticsData = await Promise.race([
 ```
 
 **Impact:**
+
 - 5x longer connection timeout handles network latency
 - Automatic retry on transient failures
 - Prevents connection pool exhaustion
@@ -78,23 +85,26 @@ const analyticsData = await Promise.race([
 ### 3. Database Performance Migration (002-analytics-performance.sql) ✅
 
 **Features:**
+
 - **Materialized View**: Pre-aggregated daily analytics
 - **Optimized Indexes**: 7 new indexes for faster queries
 - **Refresh Function**: `refresh_analytics_summary()` for scheduled updates
 - **pg_cron Support**: Optional automated daily refresh
 
 **Materialized View Benefits:**
+
 - Daily summary calculated once, reused many times
 - Reduces complex JOIN operations
 - 10-100x faster for historical data
 - Bounce rate and conversion rate pre-calculated
 
 **Usage:**
+
 ```sql
 -- Get analytics (fast!)
-SELECT * FROM analytics_daily_summary 
-WHERE tenant_id = 'xxx' 
-  AND date >= '2025-01-01' 
+SELECT * FROM analytics_daily_summary
+WHERE tenant_id = 'xxx'
+  AND date >= '2025-01-01'
 ORDER BY date DESC;
 
 -- Refresh (run daily at midnight)
@@ -102,6 +112,7 @@ SELECT refresh_analytics_summary();
 ```
 
 **Performance:**
+
 - Real-time query: 10-30 seconds
 - Materialized view: 50-200ms
 - **60-600x faster!**
@@ -111,6 +122,7 @@ SELECT refresh_analytics_summary();
 ### 4. Response Caching Middleware (middleware/cache.js) ✅
 
 **Features:**
+
 - In-memory LRU cache (100 entries, 5-minute TTL)
 - Automatic cache key generation
 - Hit/miss statistics
@@ -118,20 +130,24 @@ SELECT refresh_analytics_summary();
 - Cache statistics endpoint
 
 **Impact:**
+
 - Repeated analytics requests served from cache
 - Reduces database load by 70-90%
 - Sub-millisecond response times for cached data
 
 **Usage:**
+
 ```javascript
 // Apply to route
-router.get('/analytics/:tenantId', 
+router.get(
+  '/analytics/:tenantId',
   cacheMiddleware({ ttl: 300000 }), // 5 minutes
   analyticsController.getAnalytics
 );
 ```
 
 **Stats:**
+
 ```
 GET /api/health/cache
 {
@@ -156,6 +172,7 @@ GET /api/health/cache
 5. **POST /api/health/cache/clear** - Clear cache
 
 **Example Response:**
+
 ```json
 {
   "status": "healthy",
@@ -184,40 +201,42 @@ GET /api/health/cache
 
 ### Before Improvements:
 
-| Metric | Value |
-|--------|-------|
-| Connection Timeout | 2 seconds |
-| Query Timeout | None (infinite) |
-| Analytics Query Time | 10-30 seconds |
-| Timeout Errors | ~40% of requests |
-| Cache | None |
-| Retry Logic | None |
-| Health Monitoring | None |
+| Metric               | Value            |
+| -------------------- | ---------------- |
+| Connection Timeout   | 2 seconds        |
+| Query Timeout        | None (infinite)  |
+| Analytics Query Time | 10-30 seconds    |
+| Timeout Errors       | ~40% of requests |
+| Cache                | None             |
+| Retry Logic          | None             |
+| Health Monitoring    | None             |
 
 ### After Improvements:
 
-| Metric | Value |
-|--------|-------|
-| Connection Timeout | 10 seconds |
-| Query Timeout | 15 seconds (Promise.race) |
-| Analytics Query Time (Real-time) | 2-5 seconds |
-| Analytics Query Time (Cached) | <10ms |
-| Analytics Query Time (Materialized View) | 50-200ms |
-| Timeout Errors | <1% of requests |
-| Cache Hit Rate | 70-90% |
-| Retry Logic | 3 attempts with backoff |
-| Health Monitoring | ✅ Multiple endpoints |
+| Metric                                   | Value                     |
+| ---------------------------------------- | ------------------------- |
+| Connection Timeout                       | 10 seconds                |
+| Query Timeout                            | 15 seconds (Promise.race) |
+| Analytics Query Time (Real-time)         | 2-5 seconds               |
+| Analytics Query Time (Cached)            | <10ms                     |
+| Analytics Query Time (Materialized View) | 50-200ms                  |
+| Timeout Errors                           | <1% of requests           |
+| Cache Hit Rate                           | 70-90%                    |
+| Retry Logic                              | 3 attempts with backoff   |
+| Health Monitoring                        | ✅ Multiple endpoints     |
 
 ---
 
 ## Files Changed
 
 ### Modified:
+
 - `api/controllers/analyticsController.js` - Optimized queries, timeouts
 - `api/utils/db.js` - Connection pool improvements
 - `api/server.js` - Added health routes
 
 ### Created:
+
 - `api/middleware/cache.js` - Response caching
 - `api/routes/health.js` - Health check endpoints
 - `db/migrations/002-analytics-performance.sql` - Database optimizations
@@ -242,6 +261,7 @@ SELECT refresh_analytics_summary();
 ### 2. Set up Daily Refresh (Choose One)
 
 **Option A: pg_cron (Recommended)**
+
 ```sql
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
@@ -253,6 +273,7 @@ SELECT cron.schedule(
 ```
 
 **Option B: Application Cron**
+
 ```javascript
 // Add to server.js
 const cron = require('node-cron');
@@ -263,6 +284,7 @@ cron.schedule('0 0 * * *', async () => {
 ```
 
 **Option C: System Cron**
+
 ```bash
 # Add to crontab
 0 0 * * * psql $DATABASE_URL -c "SELECT refresh_analytics_summary();"
@@ -284,7 +306,8 @@ git push origin main
 // In routes/analytics.js
 const { cacheMiddleware } = require('../middleware/cache');
 
-router.get('/:tenantId', 
+router.get(
+  '/:tenantId',
   cacheMiddleware({ ttl: 300000 }), // 5 minutes
   analyticsController.getAnalytics
 );
@@ -324,7 +347,7 @@ curl -X POST 'https://clairehamilton.vip/api/health/cache/clear?pattern=/analyti
 
 ```sql
 -- Check view size
-SELECT 
+SELECT
   schemaname,
   matviewname,
   pg_size_pretty(pg_total_relation_size(schemaname||'.'||matviewname)) as size
@@ -332,7 +355,7 @@ FROM pg_matviews
 WHERE matviewname = 'analytics_daily_summary';
 
 -- Check last refresh (requires extension)
-SELECT * FROM pg_stat_user_tables 
+SELECT * FROM pg_stat_user_tables
 WHERE relname = 'analytics_daily_summary';
 ```
 
@@ -386,6 +409,7 @@ psql $DATABASE_URL < db/migrations/002-analytics-performance-rollback.sql
 ```
 
 Rollback script:
+
 ```sql
 DROP MATERIALIZED VIEW IF EXISTS analytics_daily_summary CASCADE;
 DROP FUNCTION IF EXISTS refresh_analytics_summary();
@@ -397,18 +421,21 @@ DROP FUNCTION IF EXISTS refresh_analytics_summary();
 ## Future Enhancements
 
 ### Short Term (1-2 weeks):
+
 - [ ] Add cache warming on server startup
 - [ ] Implement Redis for distributed caching
 - [ ] Add Prometheus metrics export
 - [ ] Create Grafana dashboard
 
 ### Medium Term (1-2 months):
+
 - [ ] Add query result pagination
 - [ ] Implement GraphQL for flexible analytics queries
 - [ ] Add real-time analytics (WebSocket)
 - [ ] Create admin dashboard for cache management
 
 ### Long Term (3-6 months):
+
 - [ ] Migrate to TimescaleDB for time-series analytics
 - [ ] Add predictive analytics (ML-based)
 - [ ] Implement data warehousing for historical analysis
@@ -421,6 +448,7 @@ DROP FUNCTION IF EXISTS refresh_analytics_summary();
 **Status:** ✅ **Production Ready**
 
 All analytics stability issues have been resolved with:
+
 - ✅ Query timeouts (no more hanging connections)
 - ✅ Connection pool optimization (handles high latency)
 - ✅ Database performance (materialized views)

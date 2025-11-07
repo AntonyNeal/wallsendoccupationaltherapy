@@ -1,6 +1,6 @@
 /**
  * Health Check Routes
- * 
+ *
  * Provides endpoints for monitoring system health:
  * - Database connectivity
  * - API status
@@ -78,7 +78,7 @@ router.get('/detailed', async (req, res) => {
   try {
     const dbHealth = await db.healthCheck();
     const { cacheStatsHandler: getCacheStats } = require('../middleware/cache');
-    
+
     // Get cache stats
     const mockReq = {};
     const mockRes = {
