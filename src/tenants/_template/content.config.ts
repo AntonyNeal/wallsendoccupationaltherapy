@@ -1,91 +1,116 @@
-import type { TenantContent } from '../../core/types/tenant.types';
+import type { TenantContent } from "../../core/types/tenant.types";
 
-/**
- * Content Configuration for [TENANT_NAME]
- *
- * All text content, services, pricing, and contact information.
- */
 export const content: TenantContent = {
   // Basic Information
-  name: '[Companion Name]',
-  tagline: '[Your Tagline - e.g., "Premium Companion in Melbourne"]',
+  name: "[Business Name]",
+  tagline: "[Your Business Tagline - e.g., \"Professional Services in Your City\"]",
   bio: `
-    [Full bio - 2-3 paragraphs about yourself, your personality, interests, and what makes you unique]
+    [Full business description - 2-3 paragraphs about your services, experience, and what makes you unique.
     
-    [Include details about your background, hobbies, favorite activities, etc.]
+    Replace this with your actual business description, highlighting your expertise, years of experience, 
+    and what clients can expect when working with you.]
+    
+    [Additional paragraph about your approach, values, or specializations.]
   `,
-  shortBio: '[One sentence summary for quick intros]',
-
-  // Services Offered
+  
+  // Contact Information
+  email: "contact@yourdomain.com",
+  phone: "+1234567890",
+  location: "Your City, State",
+  website: "https://yourdomain.com",
+  
+  // Services (customize these for your business)
   services: [
     {
-      id: 'dinner-date',
-      name: 'Dinner Date',
-      description: 'Elegant companionship for social events and fine dining',
-      duration: '3-4 hours',
-      priceDisplay: 'See Pricing',
-      featured: true,
+      id: "consultation",
+      name: "Initial Consultation",
+      description: "One-on-one consultation to understand your needs and develop a plan",
+      duration: "60 minutes",
+      priceDisplay: "See Pricing",
+      category: "consultation"
     },
     {
-      id: 'overnight',
-      name: 'Overnight Experience',
-      description: 'Extended companionship with no rush',
-      duration: '12 hours',
-      priceDisplay: 'See Pricing',
-      featured: true,
+      id: "standard-service",
+      name: "Standard Service",
+      description: "Core service offering with comprehensive support",
+      duration: "90 minutes", 
+      priceDisplay: "See Pricing",
+      category: "service"
     },
-    // Add more services as needed
+    {
+      id: "premium-service",
+      name: "Premium Service Package",
+      description: "Enhanced service with additional features and extended support",
+      duration: "2-3 hours",
+      priceDisplay: "See Pricing", 
+      category: "premium"
+    },
+    {
+      id: "workshop",
+      name: "Group Workshop",
+      description: "Educational workshop or training session for multiple participants",
+      duration: "Half day",
+      priceDisplay: "Contact for pricing",
+      category: "group"
+    }
   ],
 
-  // Pricing
+  // Pricing (customize for your business model)
   pricing: {
-    hourly: 600, // Optional: hourly rate
-    overnight: 3000, // Optional: overnight rate
-    weekend: 7000, // Optional: weekend rate
-    displayHourly: false, // Show hourly rate on site?
-    currency: 'AUD',
+    consultation: {
+      duration: "1 hour",
+      price: 150,
+      description: "Initial consultation and needs assessment"
+    },
+    "standard-service": {
+      duration: "90 minutes",
+      price: 250,
+      description: "Core service delivery"
+    },
+    "premium-service": {
+      duration: "2-3 hours", 
+      price: 450,
+      description: "Comprehensive premium package"
+    },
+    workshop: {
+      duration: "Half day",
+      price: 75,
+      description: "Per person for group workshops"
+    }
   },
 
-  // Contact Information
-  contact: {
-    email: '[your-email@example.com]',
-    phone: '[0XXX XXX XXX]', // Optional
-    phoneDisplay: '[Display format]', // How to show phone
-    whatsapp: '[+61 XXX XXX XXX]', // Optional
-    availableHours: '10:00 - 22:00 AEST',
-    responseTime: '2-4 hours',
-    preferredContact: 'email',
-  },
-
-  // Social Media (all optional)
-  socialMedia: {
-    instagram: '@username',
-    twitter: '@username',
-    onlyfans: 'username',
-    bluesky: '@username',
-  },
-
-  // Availability
+  // Business Hours
   availability: {
-    location: '[City, State]',
-    willingToTravel: true,
-    travelCities: ['Sydney', 'Melbourne', 'Brisbane'],
-    timezone: 'Australia/Sydney',
+    monday: { start: "09:00", end: "17:00" },
+    tuesday: { start: "09:00", end: "17:00" },
+    wednesday: { start: "09:00", end: "17:00" },
+    thursday: { start: "09:00", end: "17:00" },
+    friday: { start: "09:00", end: "15:00" },
+    saturday: { start: "10:00", end: "14:00" },
+    sunday: { closed: true }
   },
 
-  // Booking Preferences
-  preferences: {
-    minAge: 25,
-    minNotice: '24 hours',
-    depositRequired: true,
-    depositAmount: 200,
-    screeningRequired: true,
+  // Social Media (optional)
+  social: {
+    linkedin: "https://linkedin.com/company/yourbusiness",
+    twitter: "https://twitter.com/yourbusiness",
+    facebook: "https://facebook.com/yourbusiness",
+    instagram: "https://instagram.com/yourbusiness"
   },
 
   // SEO Configuration
   seo: {
-    title: '[Name] - [City] Companion',
-    description: '[Brief description for search engines - 150-160 characters]',
-    keywords: ['[city] companion', 'luxury escort', 'high-end'],
+    title: "[Business Name] - [Service Type] in [City]",
+    description: "[Brief description for search engines - 150-160 characters. Highlight your main services and location.]",
+    keywords: ["[your service]", "[your city]", "professional services", "[your specialty]"],
   },
+
+  // Additional Settings
+  settings: {
+    bookingRequiresApproval: true,
+    allowOnlinePayments: true,
+    showPricing: true,
+    requireDeposit: false,
+    cancellationPolicy: "24 hours notice required for cancellations"
+  }
 };
