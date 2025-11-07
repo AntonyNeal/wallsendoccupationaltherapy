@@ -52,7 +52,7 @@ const booking = await BookingDataSource.create({
 // Process payment
 const payment = await PaymentDataSource.create({
   bookingId: booking.id,
-  amount: 350.00,
+  amount: 350.0,
   currency: 'AUD',
   paymentMethod: 'card',
   processor: 'stripe',
@@ -206,7 +206,7 @@ Process and manage payments.
 // Create payment
 const payment = await PaymentDataSource.create({
   bookingId: 123,
-  amount: 350.00,
+  amount: 350.0,
   currency: 'AUD',
   paymentMethod: 'card',
   processor: 'stripe',
@@ -229,7 +229,7 @@ const { data, pagination } = await PaymentDataSource.getByTenant(
 
 // Refund payment (full or partial)
 const refund = await PaymentDataSource.refund(456, {
-  amount: 100.00, // Partial refund, omit for full refund
+  amount: 100.0, // Partial refund, omit for full refund
   reason: 'Customer request',
 });
 
@@ -237,11 +237,7 @@ const refund = await PaymentDataSource.refund(456, {
 const isCompleted = await PaymentDataSource.isCompleted(456);
 
 // Get total revenue
-const revenue = await PaymentDataSource.getTotalRevenue(
-  tenantId,
-  '2025-01-01',
-  '2025-12-31'
-);
+const revenue = await PaymentDataSource.getTotalRevenue(tenantId, '2025-01-01', '2025-12-31');
 ```
 
 ### TenantAnalyticsDataSource
