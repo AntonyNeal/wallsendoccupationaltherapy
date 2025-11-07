@@ -24,7 +24,10 @@ npm install @clairehamilton/companion-sdk
 import {
   TenantDataSource,
   BookingDataSource,
+  PaymentDataSource,
   AnalyticsDataSource,
+  TenantAnalyticsDataSource,
+  SocialAnalyticsDataSource,
 } from '@clairehamilton/companion-sdk';
 
 // Get current tenant
@@ -44,6 +47,15 @@ const booking = await BookingDataSource.create({
   startDate: '2025-01-15',
   endDate: '2025-01-15',
   durationHours: 3,
+});
+
+// Process payment
+const payment = await PaymentDataSource.create({
+  bookingId: booking.id,
+  amount: 350.00,
+  currency: 'AUD',
+  paymentMethod: 'card',
+  processor: 'stripe',
 });
 ```
 
@@ -186,6 +198,116 @@ const summary = await AnalyticsDataSource.getSummary(tenantId, '2025-01-01', '20
 // { totalSessions, uniqueVisitors, totalPageViews, bounceRate, ... }
 ```
 
+### PaymentDataSource
+
+Process and manage payments.
+
+```typescript
+// Create payment
+const payment = await PaymentDataSource.create({
+  bookingId: 123,
+  amount: 350.00,
+  currency: 'AUD',
+  paymentMethod: 'card',
+  processor: 'stripe',
+  processorPaymentId: 'pi_1234567890',
+});
+
+// Get payment by ID
+const payment = await PaymentDataSource.getById(456);
+
+// Get all payments for a booking
+const payments = await PaymentDataSource.getByBooking(123);
+
+// Get tenant payments
+const { data, pagination } = await PaymentDataSource.getByTenant(
+  tenantId,
+  'completed', // status filter
+  1,
+  20
+);
+
+// Refund payment (full or partial)
+const refund = await PaymentDataSource.refund(456, {
+  amount: 100.00, // Partial refund, omit for full refund
+  reason: 'Customer request',
+});
+
+// Check payment status
+const isCompleted = await PaymentDataSource.isCompleted(456);
+
+// Get total revenue
+const revenue = await PaymentDataSource.getTotalRevenue(
+  tenantId,
+  '2025-01-01',
+  '2025-12-31'
+);
+```
+
+### TenantAnalyticsDataSource
+
+Access business performance analytics.
+
+```typescript
+// Get performance overview
+const performance = await TenantAnalyticsDataSource.getPerformance(
+  tenantId,
+  '2025-01-01',
+  '2025-12-31'
+);
+// { totalBookings, totalRevenue, averageBookingValue, conversionRate, ... }
+
+// Get traffic sources
+const sources = await TenantAnalyticsDataSource.getTrafficSources(tenantId, 30);
+// [{ source, sessions, bookings, revenue, conversionRate }, ...]
+
+// Get location performance
+const locations = await TenantAnalyticsDataSource.getLocationBookings(tenantId, 90);
+// [{ locationName, bookingCount, revenue }, ...]
+
+// Get availability utilization
+const utilization = await TenantAnalyticsDataSource.getUtilizationRate(tenantId, 30);
+// { totalSlots, bookedSlots, utilizationRate, ... }
+
+// Get conversion funnel
+const funnel = await TenantAnalyticsDataSource.getConversionFunnel(tenantId, 30);
+// [{ stage: 'visit', count: 1000 }, { stage: 'booking', count: 50 }, ...]
+
+// Get A/B test results
+const tests = await TenantAnalyticsDataSource.getABTestResults(tenantId);
+// [{ testName, variants: [{ variantName, conversions, conversionRate }] }]
+```
+
+### SocialAnalyticsDataSource
+
+Track social media performance.
+
+```typescript
+// Get post performance
+const posts = await SocialAnalyticsDataSource.getPostPerformance(tenantId, 10);
+// [{ platform, postId, engagement: { likes, shares }, conversions: { bookings } }]
+
+// Compare platform performance
+const platforms = await SocialAnalyticsDataSource.getPlatformPerformance(tenantId, 90);
+// [{ platform: 'Instagram', avgEngagement, totalBookings, roi }]
+
+// Get top performing posts
+const topPosts = await SocialAnalyticsDataSource.getTopPosts(tenantId, 30, 5);
+// [{ platform, performanceScore, engagement, conversions }]
+
+// Get top hashtags
+const hashtags = await SocialAnalyticsDataSource.getTopHashtags(tenantId, 90, 10);
+// [{ hashtag: '#makeup', postCount, totalBookings, avgEngagement }]
+
+// Get daily metrics
+const metrics = await SocialAnalyticsDataSource.getDailyMetrics(tenantId, 'Instagram', 30);
+// [{ date, followers, engagement, reach, impressions }]
+
+// Analyze follower growth
+const growth = await SocialAnalyticsDataSource.getFollowerGrowth(tenantId, 'Instagram', 90);
+// { data: [{ date, followers, growth, growthRate }], summary: { totalGrowth, avgGrowthRate } }
+```
+
 ## TypeScript Support
 
 Full TypeScript definitions included:
@@ -194,12 +316,17 @@ Full TypeScript definitions included:
 import type {
   Tenant,
   Booking,
+  Payment,
   AvailabilitySlot,
   Location,
   AnalyticsSummary,
+  TenantPerformance,
+  PostPerformance,
+  ABTestResult,
 } from '@clairehamilton/companion-sdk';
 
 const tenant: Tenant = await TenantDataSource.getCurrent();
+const performance: TenantPerformance = await TenantAnalyticsDataSource.getPerformance(tenant.id);
 ```
 
 ## Configuration

@@ -14,6 +14,7 @@ export { TenantDataSource } from './datasources/tenant';
 export { AvailabilityDataSource } from './datasources/availability';
 export { LocationDataSource } from './datasources/location';
 export { BookingDataSource } from './datasources/booking';
+export { PaymentDataSource } from './datasources/payment';
 export { AnalyticsDataSource } from './datasources/analytics';
 export { TenantAnalyticsDataSource } from './datasources/tenantAnalytics';
 export { SocialAnalyticsDataSource } from './datasources/socialAnalytics';
@@ -41,6 +42,8 @@ export type {
   FollowerGrowthPoint,
   FollowerGrowthSummary,
 } from './datasources/socialAnalytics';
+
+export type { Payment } from './datasources/payment';
 
 export type {
   TouringLocation,
