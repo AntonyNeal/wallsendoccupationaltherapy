@@ -16,9 +16,10 @@ app.use(
 
       // Define allowed patterns
       const allowedPatterns = [
-        /^https?:\/\/([a-z0-9-]+\.)?prebooking\.pro$/, // *.prebooking.pro
-        /^https?:\/\/([a-z0-9-]+\.)?companionconnect\.app$/, // *.companionconnect.app
-        /^https?:\/\/clairehamilton\.vip$/, // clairehamilton.vip
+        /^https?:\/\/([a-z0-9-]+\.)?avaliable\.pro$/, // *.avaliable.pro
+        /^https?:\/\/([a-z0-9-]+\.)?prebooking\.pro$/, // *.prebooking.pro (legacy)
+        /^https?:\/\/([a-z0-9-]+\.)?companionconnect\.app$/, // *.companionconnect.app (legacy)
+        /^https?:\/\/clairehamilton\.vip$/, // clairehamilton.vip (custom domain)
         /^http:\/\/localhost(:\d+)?$/, // localhost:*
         /^http:\/\/127\.0\.0\.1(:\d+)?$/, // 127.0.0.1:*
       ];

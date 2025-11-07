@@ -114,12 +114,17 @@ function getSubdomain(hostname: string): string {
     return '';
   }
 
-  // For xxx.prebooking.pro, return 'xxx'
+  // For xxx.avaliable.pro, return 'xxx'
+  if (host.endsWith('.avaliable.pro')) {
+    return parts[0];
+  }
+
+  // For xxx.prebooking.pro, return 'xxx' (legacy)
   if (host.endsWith('.prebooking.pro')) {
     return parts[0];
   }
 
-  // For xxx.companionconnect.app, return 'xxx'
+  // For xxx.companionconnect.app, return 'xxx' (legacy)
   // For companionconnect.app, return ''
   if (parts.length >= 3) {
     return parts[0];
@@ -132,7 +137,15 @@ function getSubdomain(hostname: string): string {
  * Check if domain is a platform domain (not tenant-specific)
  */
 function isPlatformDomain(subdomain: string): boolean {
-  const platformSubdomains = ['', 'www', 'companionconnect', 'platform', 'admin', 'prebooking'];
+  const platformSubdomains = [
+    '',
+    'www',
+    'companionconnect',
+    'platform',
+    'admin',
+    'prebooking',
+    'avaliable',
+  ];
   return platformSubdomains.includes(subdomain);
 }
 

@@ -10,7 +10,7 @@ interface RequestOptions extends Omit<RequestInit, 'body'> {
 export class ApiClient {
   private baseURL: string;
 
-  constructor(baseURL: string = 'https://clairehamilton.vip/api') {
+  constructor(baseURL: string = 'https://avaliable.pro/api') {
     this.baseURL = baseURL;
   }
 
