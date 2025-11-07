@@ -64,6 +64,6 @@ domains:
     type: PRIMARY
   - domain: www.clairehamilton.vip
     type: ALIAS
-  - domain: prebooking.pro
+  - domain: avaliable.pro
     type: ALIAS
     wildcard: true
