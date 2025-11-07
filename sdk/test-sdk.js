@@ -144,17 +144,16 @@ async function testSDK() {
         utmCampaign: 'sdk_validation',
       });
       console.log('✅ createSession():', {
-        sessionId: session.sessionId,
+        sessionId: session.id,
         created: true,
       });
 
       // Test event tracking
       await AnalyticsDataSource.trackEvent({
-        sessionId: session.sessionId,
+        sessionId: session.id,
+        tenantId: tenant.id,
         eventType: 'sdk_test',
-        eventCategory: 'testing',
-        eventLabel: 'datasource_validation',
-        eventValue: 1,
+        eventData: { test: 'validation' },
       });
       console.log('✅ trackEvent():', {
         tracked: true,
