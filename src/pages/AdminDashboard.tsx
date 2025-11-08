@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Calendar, ArrowUp, Instagram, Twitter, MessageSquare, AlertCircle } from 'lucide-react';
+// CRITICAL: This MUST be a default import, NOT a named import
+// ✅ CORRECT: import SDKTests from '../components/SDKTests';
+// ❌ WRONG: import { SDKTests } from '../components/SDKTests';
 import SDKTests from '../components/SDKTests';
 
 // Mock social media posts data - Admin dashboard for template platform
