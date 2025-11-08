@@ -532,8 +532,8 @@ export default function SDKTests() {
         `✅ ${posts.length} posts analyzed\n${posts
           .slice(0, 2)
           .map(
-              (p: any) =>
-                `  • ${p.platform}: ${p.engagement?.likes || 0} likes, ${p.conversions?.bookings || 0} bookings`
+            (p: any) =>
+              `  • ${p.platform}: ${p.engagement?.likes || 0} likes, ${p.conversions?.bookings || 0} bookings`
           )
           .join('\n')}`
       );
@@ -785,7 +785,7 @@ export default function SDKTests() {
               ⬇️
             </button>
           </div>
-          
+
           <div className="grid grid-cols-4 gap-2 mb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-green-400">{successCount}</div>
@@ -804,11 +804,9 @@ export default function SDKTests() {
               <div className="text-xs text-slate-400">Total</div>
             </div>
           </div>
-          
+
           {runningCount > 0 && (
-            <div className="text-sm text-yellow-400 animate-pulse">
-              ⏳ Running tests...
-            </div>
+            <div className="text-sm text-yellow-400 animate-pulse">⏳ Running tests...</div>
           )}
         </div>
       </div>
