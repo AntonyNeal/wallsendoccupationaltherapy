@@ -76,6 +76,55 @@ export {
   type AuditSummary,
 } from './tools/audit';
 
+// Export infrastructure
+export type {
+  CloudProvider,
+  CloudProviderConfig,
+  IResourceGroup,
+  IDatabase,
+  IStaticWebApp,
+  IAppService,
+  ICDN,
+  IDNSZone,
+  IStorage,
+  IInfrastructureStack,
+  DatabaseConfig,
+  StaticWebAppConfig,
+  AppServiceConfig,
+  StackConfig,
+  ResourceGroupResult,
+  DatabaseResult,
+  StaticWebAppResult,
+  AppServiceResult,
+  CDNResult,
+  DNSZoneResult,
+  StorageResult,
+  DomainResult,
+  DNSRecord,
+  StorageFile,
+  StackDeploymentResult,
+  StackStatus,
+} from './infrastructure/interfaces';
+
+export { AzureProvider } from './infrastructure/providers/azure';
+export { DigitalOceanProvider } from './infrastructure/providers/digitalocean';
+
+export {
+  createProvider,
+  createStack,
+  quickDeploy,
+  multiProviderDeploy,
+  detectProvider,
+  autoConfigureProvider,
+  type ProviderConfig,
+} from './infrastructure/factory';
+
+export {
+  generateTerraformModule,
+  writeTerraformFiles,
+  type TerraformModule,
+} from './infrastructure/terraform';
+
 // Export additional types from new datasources
 export type {
   TenantPerformance,
