@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, ArrowUp, Instagram, Twitter, MessageSquare, AlertCircle } from 'lucide-react';
 import SDKTests from '../components/SDKTests';
 
-// Mock social media posts data
+// Mock social media posts data - Admin dashboard for template platform
 const mockSocialPosts = [
   {
     platform: 'instagram',
