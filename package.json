@@ -20,6 +20,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
+    "deploy:configure": "pwsh -ExecutionPolicy Bypass -File scripts/deploy.ps1",
     "deploy:azure": "npx ts-node deploy-azure.ts",
     "deploy:check": "az account show && echo 'Azure CLI configured correctly'",
     "lint": "eslint src --max-warnings 0",
