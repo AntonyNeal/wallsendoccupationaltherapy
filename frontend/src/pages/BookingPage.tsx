@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TenantConfig, Service } from '../types';
-import { bookingService } from '../services/booking.service';
+import { TenantConfig } from '../types';
 
 interface BookingPageProps {
   config: TenantConfig;
@@ -176,7 +175,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ config }) => {
       <InfoBox>
         <strong>📅 Booking Information</strong>
         <p style={{ marginTop: '0.5rem' }}>
-          Select your preferred service and provide your details. We'll contact you to confirm 
+          Select your preferred service and provide your details. We&apos;ll contact you to confirm 
           your appointment time. For NDIS participants, please have your NDIS number ready.
         </p>
       </InfoBox>
