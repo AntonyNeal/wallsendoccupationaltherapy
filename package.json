@@ -1,0 +1,24 @@
+{
+  "name": "wallsend-occupational-therapy",
+  "version": "1.0.0",
+  "description": "Service booking platform for Wallsend Occupational Therapy",
+  "private": true,
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "lint": "cd backend && npm run lint && cd ../frontend && npm run lint"
+  },
+  "keywords": [
+    "occupational-therapy",
+    "ndis",
+    "booking",
+    "healthcare",
+    "wallsend"
+  ],
+  "author": "Wallsend Occupational Therapy",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
