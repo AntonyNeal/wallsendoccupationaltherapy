@@ -2,6 +2,8 @@
 
 If you have a local repository with the same name and want to connect it to this GitHub repository, follow these steps:
 
+> **Important**: This repository exists at `https://github.com/AntonyNeal/wallsendoccupationaltherapy` (no hyphens). Make sure you're using the correct URL.
+
 ## Option 1: Connect Existing Local Repository
 
 If you already have a local repository with content that you want to push to this remote:
@@ -10,13 +12,19 @@ If you already have a local repository with content that you want to push to thi
 # Navigate to your local repository
 cd /path/to/your/wallsendoccupationaltherapy
 
-# Add this GitHub repository as a remote
-git remote add origin https://github.com/AntonyNeal/wallsendoccupationaltherapy.git
-
-# Verify the remote was added
+# Check if you already have a remote configured
 git remote -v
 
-# Fetch the remote branches
+# If you see a remote with a different URL, remove it first
+git remote remove origin
+
+# Add this GitHub repository as a remote (note: no hyphens in the repo name!)
+git remote add origin https://github.com/AntonyNeal/wallsendoccupationaltherapy.git
+
+# Verify the remote was added correctly
+git remote -v
+
+# Fetch the remote branches to confirm the repository exists
 git fetch origin
 
 # If you want to merge the remote main branch with your local work:
@@ -77,6 +85,28 @@ When pushing to GitHub, you may need to authenticate. GitHub requires either:
    - Use SSH URL: `git@github.com:AntonyNeal/wallsendoccupationaltherapy.git`
 
 ## Troubleshooting
+
+### If you see "remote repository doesn't exist"
+
+This usually means you have the wrong URL. This repository exists at:
+```
+https://github.com/AntonyNeal/wallsendoccupationaltherapy
+```
+
+**Note**: The repository name has NO hyphens. If you're trying to connect to `wallsend-occupational-therapy` (with hyphens), that's a different repository.
+
+To fix:
+```bash
+# Check your current remote URL
+git remote -v
+
+# If it's wrong, remove it and add the correct one
+git remote remove origin
+git remote add origin https://github.com/AntonyNeal/wallsendoccupationaltherapy.git
+
+# Test the connection
+git fetch origin
+```
 
 ### If you see "remote origin already exists"
 ```bash
