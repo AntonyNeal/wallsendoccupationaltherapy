@@ -1,104 +1,34 @@
-# Service Booking Platform Template
+# Wallsend Occupational Therapy - Website
 
-A comprehensive, multi-tenant service booking platform built with React, TypeScript, and Vite. This template provides a complete foundation for building booking systems across various industries including consulting, coaching, professional services, and more.
+Professional website for Wallsend Occupational Therapy, a leading NDIS-registered occupational therapy provider serving Newcastle, Lake Macquarie, and the Hunter Region.
 
-## 🎯 Quick Start for New Users
+## 🏥 About Wallsend OT
 
-**Want to create your own booking app?** 
+**Empowering Independence Through Expert Care**
 
-👉 **[READ THE FORK & CUSTOMIZE GUIDE](./FORK-AND-CUSTOMIZE.md)** 👈
+Wallsend Occupational Therapy provides comprehensive occupational therapy services including:
 
-This guide walks you through:
-1. Forking this repository
-2. Using the SDK generators to create your theme
-3. Customizing content for your business
-4. Creating required assets
-5. Deploying to Azure
+- ✅ NDIS Functional Assessments
+- ✅ Home Modification Assessments
+- ✅ Functional Capacity Evaluations
+- ✅ Assistive Technology Prescription
+- ✅ Workplace Ergonomics
+- ✅ Paediatric Occupational Therapy
+- ✅ Rehabilitation Therapy
+- ✅ Aged Care Assessments
 
-**Built-in SDK Generators:**
-- 🎨 **Theme Generator** - Create complete themes from prompts like "fitness studio with modern blue theme"
-- 🚀 **App Generator** - Generate entire app configurations from natural language
-- 📊 **SEO Generator** - Auto-generate Open Graph and Twitter Card meta tags
-- 🖼️ **Asset Generator** - Get detailed specs for all images you need
-- 🔍 **Content Auditor** - Scan files for template content that needs updating
-- ☁️ **Infrastructure Module** - Deploy to Azure, DigitalOcean, or any cloud provider
-
-[See SDK Documentation →](./sdk/GENERATORS-GUIDE.md)
-
-[See Infrastructure Guide →](./sdk/INFRASTRUCTURE-GUIDE.md)
+**Serving**: Newcastle, Lake Macquarie, Maitland, Port Stephens & Hunter Region  
+**Status**: NDIS Registered Provider  
+**Contact**: (02) 4961 5555 | hello@wallsendot.com.au
 
 ---
-
-## 🚀 Features
-
-### Multi-Tenant Architecture
-
-- **Subdomain-based routing** for tenant isolation
-- **Dynamic theme and content configuration** per tenant
-- **Scalable tenant management** system
-- **A/B testing support** for photos and content
-
-### Booking System
-
-- **Real-time availability** management
-- **Service catalog** with pricing options
-- **Customer booking** interface
-- **Admin dashboard** for booking management
-- **Email notifications** and reminders
-
-### Professional Features
-
-- **Payment integration** (Stripe, PayPal ready)
-- **Analytics dashboard** with booking insights
-- **Photo gallery** with category management
-- **Testimonial system** with ratings
-- **SEO optimization** built-in
-- **Responsive design** for all devices
-
-### Technical Stack
-
-- **Frontend**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS with custom theming
-- **State Management**: TanStack Query (React Query)
-- **HTTP Client**: Axios with interceptors
-- **Routing**: React Router with tenant detection
-- **Build Tool**: Vite with optimized bundling
-
-## 🏗️ Architecture
-
-### Tenant System
-
-Each tenant has isolated configurations for:
-
-- **Content**: Services, pricing, contact info, bio
-- **Theme**: Colors, fonts, layout preferences
-- **Photos**: Hero images, galleries, testimonials
-- **Features**: Enabled/disabled functionality per tenant
-
-### File Structure
-
-```
-src/
-├── core/                 # Core platform functionality
-│   ├── types/           # TypeScript interfaces
-│   ├── components/      # Shared components
-│   ├── hooks/          # Custom React hooks
-│   └── utils/          # Utility functions
-├── tenants/            # Tenant-specific configurations
-│   └── demo/           # Demo tenant (professional services)
-│       ├── content.config.ts
-│       ├── theme.config.ts
-│       ├── photos.config.ts
-│       └── index.ts
-└── infrastructure/     # Backend and deployment configs
-```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or yarn
+- Node.js 20+
+- npm or pnpm
 - Git
 
 ### Installation

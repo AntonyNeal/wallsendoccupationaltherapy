@@ -5,8 +5,8 @@ import { parseNextAvailability } from '../services/availability/dummyData';
 import './MobileCTABar.css';
 
 interface MobileCTABarProps {
-  ctaText?: string; // Button text (default: "Book Now")
-  ctaAction: () => void; // What happens when button clicked
+  onBookNow: () => void; // What happens when button clicked
+  ctaText?: string; // Button text (default: "Book Assessment")
   serviceId?: string; // Optional service identifier
   hideWhenModalOpen?: boolean; // Hide when modal/overlay active
   autoRefreshInterval?: number; // Refresh availability in ms (0 = disabled)
@@ -16,8 +16,8 @@ interface MobileCTABarProps {
 }
 
 export default function MobileCTABar({
-  ctaText = 'Book Your Hay',
-  ctaAction,
+  onBookNow,
+  ctaText = 'Book Assessment',
   serviceId,
   hideWhenModalOpen = true,
   autoRefreshInterval = 300000, // 5 minutes default
@@ -86,18 +86,18 @@ export default function MobileCTABar({
       <div className="availability-info" aria-live="polite" aria-atomic="true">
         {loading ? (
           <div className="availability-loading">
-            <span className="loading-icon">🌾</span>
-            <span>Checking delivery slots...</span>
+            <span className="loading-icon">⏰</span>
+            <span>Checking availability...</span>
           </div>
         ) : nextAvailability ? (
           <div className="availability-text">
-            <span className="availability-icon">�</span>
+            <span className="availability-icon">✓</span>
             <span>{nextAvailability.displayText}</span>
           </div>
         ) : (
           <div className="availability-text">
-            <span className="availability-icon">🇦🇺</span>
-            <span>Fair dinkum delivery</span>
+            <span className="availability-icon">📅</span>
+            <span>Book your appointment</span>
           </div>
         )}
       </div>
@@ -105,7 +105,7 @@ export default function MobileCTABar({
       {/* CTA Button */}
       <button
         className="cta-button"
-        onClick={ctaAction}
+        onClick={onBookNow}
         type="button"
         aria-label={`${ctaText} - ${nextAvailability?.displayText || 'Check availability'}`}
       >

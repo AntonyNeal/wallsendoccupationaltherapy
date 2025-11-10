@@ -1,15 +1,16 @@
 {
-  "name": "service-booking-platform",
+  "name": "wallsend-occupational-therapy",
   "private": true,
   "version": "1.0.0",
-  "description": "Multi-tenant service booking platform with SDK integration - Template for service-based businesses",
+  "description": "Professional website for Wallsend Occupational Therapy - NDIS registered OT services in Newcastle & Lake Macquarie",
   "keywords": [
-    "booking",
-    "sdk",
-    "multi-tenant",
-    "services",
-    "scheduling",
-    "template"
+    "occupational-therapy",
+    "NDIS",
+    "healthcare",
+    "Newcastle",
+    "Lake-Macquarie",
+    "home-modifications",
+    "assistive-technology"
   ],
   "engines": {
     "node": ">=20.0.0"

@@ -1,62 +1,44 @@
-import { useEffect, useState, useRef } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+﻿import { useEffect, useState } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useTenant } from './core/hooks/useTenant';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Prices from './pages/Prices';
-import Calculator from './pages/Calculator';
-import AdminDashboard from './pages/AdminDashboard';
 import BookingModal from './components/BookingModal';
 import MobileCTABar from './components/MobileCTABar';
 import { initializeSession, registerSession, trackConversion } from './utils/utm.service';
-import './styles/neo-australian.css';
 
 function App() {
-  const location = useLocation();
   const { content, loading } = useTenant();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const clickCountRef = useRef(0);
-  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Handle booking modal open
   const handleBookingOpen = () => {
     setIsBookingOpen(true);
     window.dispatchEvent(new CustomEvent('modalOpened'));
   };
 
-  // Handle booking modal close
   const handleBookingClose = () => {
     setIsBookingOpen(false);
     window.dispatchEvent(new CustomEvent('modalClosed'));
   };
 
   useEffect(() => {
-    // Initialize UTM tracking and session on app load
     const initTracking = async () => {
       try {
-        // Initialize local session data (sync)
-        const session = initializeSession();
-        console.debug('Session initialized:', session.userId);
-
-        // Register session with backend (async, non-blocking)
+        initializeSession();
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || window.location.origin;
         await registerSession(apiBaseUrl);
-
-        // Track page view
         await trackConversion('page_view', { page: 'home' }, apiBaseUrl);
       } catch (error) {
         console.debug('Error initializing tracking:', error);
-        // Don't fail the app if tracking fails
       }
     };
-
     initTracking();
   }, []);
 
-  // Show loading state while tenant data is being fetched
   if (loading || !content) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -68,6 +50,13 @@ function App() {
     );
   }
 
+  const menuItems = [
+    { path: '/', label: 'Home', icon: '' },
+    { path: '/services', label: 'Services', icon: '' },
+    { path: '/about', label: 'About', icon: 'ℹ' },
+    { path: '/prices', label: 'Prices', icon: '' },
+  ];
+
   return (
     <>
       <Helmet>
@@ -75,498 +64,208 @@ function App() {
         <meta name="description" content={content.shortBio || content.bio} />
       </Helmet>
 
-      <div className="min-h-screen bg-white">
-        {/* Navigation Header */}
-        <header
-          className={`sticky top-0 z-50 ${location.pathname === '/' ? 'bg-aussie-green/90 backdrop-blur-md border-b-4 border-aussie-gold' : 'bg-aussie-green/95 backdrop-blur-sm shadow-lg border-b-4 border-aussie-gold'}`}
-          style={{
-            boxShadow: '0 4px 30px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(0, 255, 65, 0.1)',
-            background:
-              location.pathname === '/'
-                ? 'linear-gradient(135deg, #006747 0%, #008751 50%, #006747 100%)'
-                : 'linear-gradient(135deg, #006747 0%, #008751 100%)',
-          }}
-        >
-          <div className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 xl:py-6">
-            <nav className="max-w-7xl mx-auto">
-              {/* Mobile Layout */}
-              <div className="lg:hidden flex justify-between items-center">
-                <div
-                  onClick={() => {
-                    const newCount = ++clickCountRef.current;
+      <style>
+        {`
+          /* Holographic windshield effect */
+          .holographic-menu {
+            background: linear-gradient(
+              135deg,
+              rgba(13, 148, 136, 0.95) 0%,
+              rgba(3, 105, 161, 0.95) 50%,
+              rgba(13, 148, 136, 0.95) 100%
+            );
+            backdrop-filter: blur(20px);
+            animation: holographicShimmer 3s ease-in-out infinite;
+          }
 
-                    if (newCount === 3) {
-                      clickCountRef.current = 0;
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                        resetTimerRef.current = null;
-                      }
-                      window.location.href = '/admin';
-                    } else if (newCount === 1) {
-                      // Single click - navigate to home
-                      window.location.href = '/';
+          @keyframes holographicShimmer {
+            0%, 100% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+          }
 
-                      // Clear existing timer
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                      }
+          .holographic-icon {
+            text-shadow: 
+              0 0 10px rgba(255, 255, 255, 0.8),
+              0 0 20px rgba(13, 148, 136, 0.6),
+              0 0 30px rgba(3, 105, 161, 0.4);
+            animation: iconFloat 3s ease-in-out infinite;
+          }
 
-                      // Set new timer to reset counter after 500ms
-                      resetTimerRef.current = setTimeout(() => {
-                        clickCountRef.current = 0;
-                        resetTimerRef.current = null;
-                      }, 500);
-                    } else {
-                      // Clear existing timer
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                      }
+          @keyframes iconFloat {
+            0%, 100% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
 
-                      // Set new timer to reset counter after 500ms
-                      resetTimerRef.current = setTimeout(() => {
-                        clickCountRef.current = 0;
-                        resetTimerRef.current = null;
-                      }, 500);
-                    }
-                  }}
-                  className={`text-xl sm:text-2xl font-bold text-aussie-gold tracking-wider hover:text-white transition-all duration-300 whitespace-nowrap cursor-pointer select-none uppercase`}
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    textShadow:
-                      '0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 204, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.8)',
-                  }}
-                  title={
-                    location.pathname === '/admin' ? 'Click to return home' : 'Click to go home'
-                  }
-                >
-                  {content.name}
-                </div>
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => {
-                      handleBookingOpen();
-                    }}
-                    className="px-4 py-2 bg-aussie-gold text-aussie-green rounded-lg font-bold hover:bg-white hover:text-aussie-green transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 text-sm cursor-pointer uppercase tracking-wide border-3 border-white"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      boxShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 4px 15px rgba(0, 0, 0, 0.3)',
-                    }}
-                    aria-label="Book your hay delivery"
-                  >
-                    BOOK NOW
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsMobileMenuOpen(!isMobileMenuOpen);
-                    }}
-                    className={`p-2 text-aussie-gold hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 rounded-lg`}
-                    style={{
-                      filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))',
-                    }}
-                    aria-label="Toggle mobile menu"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {isMobileMenuOpen ? (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      ) : (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      )}
-                    </svg>
-                  </button>
-                </div>
+          .menu-slide-in {
+            animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          }
+
+          @keyframes slideDown {
+            from {
+              transform: translateY(-100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+
+          .hamburger-line {
+            transition: all 0.3s ease;
+          }
+
+          .hamburger-open .line1 {
+            transform: rotate(45deg) translateY(8px);
+          }
+
+          .hamburger-open .line2 {
+            opacity: 0;
+          }
+
+          .hamburger-open .line3 {
+            transform: rotate(-45deg) translateY(-8px);
+          }
+        `}
+      </style>
+
+      <div className="min-h-screen bg-white relative">
+        {/* Minimalist Fixed Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="text-xl sm:text-2xl font-light text-gray-900 hover:text-teal-600 transition-colors duration-300"
+            >
+              {content.name}
+            </Link>
+
+            {/* Hamburger Icon */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`${isMenuOpen ? 'hamburger-open' : ''} p-2 focus:outline-none`}
+              aria-label="Menu"
+            >
+              <div className="w-6 space-y-1.5">
+                <div className="hamburger-line line1 h-0.5 bg-gray-900"></div>
+                <div className="hamburger-line line2 h-0.5 bg-gray-900"></div>
+                <div className="hamburger-line line3 h-0.5 bg-gray-900"></div>
               </div>
-
-              {/* Desktop Layout */}
-              <div className="hidden lg:flex justify-between items-center">
-                {/* Glass Morphism Logo Button */}
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // If on admin page, go home on any click
-                    if (location.pathname === '/admin') {
-                      window.location.href = '/';
-                      return;
-                    }
-
-                    // Count clicks for triple-click easter egg
-                    clickCountRef.current += 1;
-                    const newCount = clickCountRef.current;
-
-                    if (newCount === 3) {
-                      clickCountRef.current = 0;
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                        resetTimerRef.current = null;
-                      }
-                      window.location.href = '/admin';
-                    } else if (newCount === 1) {
-                      // Single click - navigate to home
-                      window.location.href = '/';
-
-                      // Clear existing timer
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                      }
-
-                      // Set new timer to reset counter after 500ms
-                      resetTimerRef.current = setTimeout(() => {
-                        clickCountRef.current = 0;
-                        resetTimerRef.current = null;
-                      }, 500);
-                    } else {
-                      // Clear existing timer
-                      if (resetTimerRef.current) {
-                        clearTimeout(resetTimerRef.current);
-                      }
-
-                      // Set new timer to reset counter after 500ms
-                      resetTimerRef.current = setTimeout(() => {
-                        clickCountRef.current = 0;
-                        resetTimerRef.current = null;
-                      }, 500);
-                    }
-                  }}
-                  className="px-8 py-4 rounded-xl cursor-pointer select-none transition-all duration-300 hover:scale-105"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, rgba(0, 135, 81, 0.3) 0%, rgba(0, 103, 71, 0.4) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    border: '3px solid',
-                    borderImage:
-                      'linear-gradient(135deg, var(--aussie-gold) 0%, var(--wattle-gold) 50%, var(--aussie-gold) 100%) 1',
-                    boxShadow:
-                      '0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1), inset 0 4px 10px rgba(255, 255, 255, 0.1)',
-                  }}
-                  title={
-                    location.pathname === '/admin' ? 'Click to return home' : 'Click to go home'
-                  }
-                >
-                  <div
-                    className="text-4xl xl:text-5xl font-bold text-aussie-gold tracking-wider hover:text-white transition-all duration-300 whitespace-nowrap uppercase"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      textShadow:
-                        '0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 204, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.8)',
-                    }}
-                  >
-                    {content.name}
-                  </div>
-                </div>
-
-                {/* Desktop Navigation */}
-                <div className="flex space-x-6 xl:space-x-8 items-center">
-                  <button
-                    onClick={() => {
-                      handleBookingOpen();
-                    }}
-                    className="px-8 lg:px-10 py-4 lg:py-5 bg-aussie-gold text-aussie-green rounded-lg font-bold hover:bg-white hover:text-aussie-green transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-4 whitespace-nowrap text-xl lg:text-2xl cursor-pointer uppercase tracking-wide border-4 border-white"
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      boxShadow: '0 0 25px rgba(255, 215, 0, 0.8), 0 4px 15px rgba(0, 0, 0, 0.3)',
-                    }}
-                    aria-label="Book your hay delivery"
-                  >
-                    BOOK NOW
-                  </button>
-
-                  {/* Hamburger Menu Button - Desktop */}
-                  <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="p-4 text-aussie-gold hover:text-white transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-aussie-gold rounded-lg"
-                    style={{
-                      filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))',
-                    }}
-                    aria-label="Open menu"
-                  >
-                    <svg
-                      className="h-12 w-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      strokeWidth={3}
-                    >
-                      {isMobileMenuOpen ? (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      ) : (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      )}
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </nav>
-
-            {/* Trucker Windshield Mobile Menu - Full Screen Holographic Overlay */}
-            {isMobileMenuOpen && (
-              <>
-                {/* Windshield Glass Effect - Transparent overlay */}
-                <div
-                  className="fixed inset-0 z-50 animate-slide-down"
-                  style={{
-                    background:
-                      'linear-gradient(180deg, rgba(0, 135, 81, 0.95) 0%, rgba(0, 103, 71, 0.98) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow:
-                      'inset 0 0 100px rgba(255, 215, 0, 0.1), inset 0 4px 20px rgba(255, 255, 255, 0.1)',
-                  }}
-                  onClick={(e) => {
-                    if (e.target === e.currentTarget) setIsMobileMenuOpen(false);
-                  }}
-                >
-                  {/* Windshield reflection effects */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%)',
-                    }}
-                  />
-
-                  {/* Rain/scratches effect */}
-                  <div className="absolute inset-0 pointer-events-none opacity-20">
-                    <div
-                      className="absolute top-10 left-1/4 w-px h-32 bg-white/30"
-                      style={{ transform: 'rotate(-15deg)' }}
-                    />
-                    <div
-                      className="absolute top-1/3 right-1/4 w-px h-24 bg-white/20"
-                      style={{ transform: 'rotate(20deg)' }}
-                    />
-                  </div>
-
-                  {/* Content Container */}
-                  <div className="relative h-full flex flex-col items-center justify-center px-8 py-20">
-                    {/* Close button - Top right corner like sun visor */}
-                    <button
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="absolute top-8 right-8 text-aussie-gold hover:text-white transition-all duration-300 transform hover:rotate-90 p-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-aussie-gold"
-                      style={{
-                        fontSize: '4rem',
-                        textShadow: '0 0 30px rgba(255, 215, 0, 1)',
-                        fontWeight: 'bold',
-                      }}
-                      aria-label="Close menu"
-                    >
-                      ✕
-                    </button>
-
-                    {/* Logo at top */}
-                    <div
-                      className="mb-16 text-center"
-                      style={{
-                        fontFamily: 'var(--font-heading)',
-                        fontSize: '3rem',
-                        color: 'var(--aussie-gold)',
-                        textShadow:
-                          '0 0 40px rgba(255, 215, 0, 1), 0 0 80px rgba(255, 215, 0, 0.6)',
-                        letterSpacing: '0.3em',
-                      }}
-                    >
-                      O&apos;SULLIVAN FARMS
-                    </div>
-
-                    {/* Big Holographic Buttons */}
-                    <div className="space-y-8 w-full max-w-2xl px-4">
-                      <Link
-                        to="/"
-                        className="hologram-button block"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                        }}
-                      >
-                        <span className="hologram-icon">🏠</span>
-                        <span className="hologram-text">HOME</span>
-                      </Link>
-
-                      <Link
-                        to="/about"
-                        className="hologram-button block"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                        }}
-                      >
-                        <span className="hologram-icon">🇦🇺</span>
-                        <span className="hologram-text">ABOUT</span>
-                      </Link>
-
-                      <Link
-                        to="/services"
-                        className="hologram-button block"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                        }}
-                      >
-                        <span className="hologram-icon">🚜</span>
-                        <span className="hologram-text">SERVICES</span>
-                      </Link>
-
-                      <Link
-                        to="/prices"
-                        className="hologram-button block"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                        }}
-                      >
-                        <span className="hologram-icon">💰</span>
-                        <span className="hologram-text">PRICES</span>
-                      </Link>
-
-                      <Link
-                        to="/calculator"
-                        className="hologram-button block"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                        }}
-                      >
-                        <span className="hologram-icon">🧮</span>
-                        <span className="hologram-text">CALCULATOR</span>
-                      </Link>
-
-                      <button
-                        onClick={() => {
-                          setIsMobileMenuOpen(false);
-                          handleBookingOpen();
-                        }}
-                        className="hologram-button block w-full border-4 border-aussie-gold"
-                        style={{
-                          fontFamily: 'var(--font-heading)',
-                          background:
-                            'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%)',
-                        }}
-                      >
-                        <span className="hologram-icon">📞</span>
-                        <span className="hologram-text">BOOK NOW</span>
-                      </button>
-                    </div>
-
-                    {/* Bottom tagline */}
-                    <div
-                      className="mt-12 text-center text-aussie-gold/80 text-sm italic"
-                      style={{
-                        fontFamily: 'var(--font-body)',
-                        textShadow: '0 0 10px rgba(255, 215, 0, 0.5)',
-                      }}
-                    >
-                      Fair Dinkum Farming • 100% Aussie Owned
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+            </button>
           </div>
         </header>
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/prices" element={<Prices />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/calculator" element={<Calculator />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
+        {/* Holographic Windshield Menu Dropdown */}
+        {isMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              onClick={() => setIsMenuOpen(false)}
+            />
 
-        {/* Footer - Hidden on home page and admin page */}
-        {location.pathname !== '/' && location.pathname !== '/admin' && (
-          <footer className="bg-gray-900 text-white py-12 sm:py-16 lg:py-20 xl:py-24 px-4 sm:px-6 lg:px-8">
-            <div className="w-full px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 mb-8 sm:mb-12 lg:mb-16">
-                  <div>
-                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
-                      {content.name}
-                    </h3>
-                    <p className="text-gray-300 mb-4 sm:text-base lg:text-lg">{content.tagline}</p>
-                    <p className="text-gray-300 text-sm sm:text-base">{content.shortBio}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
-                      Contact
-                    </h3>
-                    <div className="space-y-2 sm:space-y-3 text-gray-300 sm:text-base lg:text-lg">
-                      <p>Phone: (03) 5480 0123</p>
-                      <p>Email: sales@osullivanfarms.com.au</p>
-                      <p>Location: Echuca, Victoria</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold mb-4 sm:mb-6">
-                      Connect
-                    </h3>
-                    <div className="space-y-2 sm:space-y-3">
-                      <a
-                        href="https://www.facebook.com/osullivanfarms"
-                        className="block text-gray-300 hover:text-wattle-gold transition-colors sm:text-base lg:text-lg"
-                      >
-                        Facebook
-                      </a>
-                      <a
-                        href="https://www.instagram.com/osullivanfarms"
-                        className="block text-gray-300 hover:text-wattle-gold transition-colors sm:text-base lg:text-lg"
-                      >
-                        Instagram
-                      </a>
-                      <a
-                        href="https://twitter.com/osullivanfarms"
-                        className="block text-gray-300 hover:text-wattle-gold transition-colors sm:text-base lg:text-lg"
-                      >
-                        Twitter/X
-                      </a>
-                    </div>
-                  </div>
+            {/* Holographic Menu Panel */}
+            <div className="fixed top-0 left-0 right-0 z-50 holographic-menu menu-slide-in shadow-2xl">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Close Button */}
+                <div className="flex justify-end mb-8">
+                  <button
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-white/80 hover:text-white p-2 transition-colors"
+                  >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                <div className="border-t border-eucalyptus pt-8 sm:pt-12 lg:pt-16 text-center">
-                  <p className="text-wattle-gold text-base sm:text-lg lg:text-xl font-bebas mb-2">
-                    🇦🇺 PROUDLY AUSTRALIAN OWNED & OPERATED 🇦🇺
-                  </p>
-                  <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
-                    © 2025 {content.name}. All rights reserved.
-                  </p>
+
+                {/* Menu Items with Holographic Icons */}
+                <nav className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 mb-8">
+                  {menuItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/10 hover:bg-white/20 transition-all duration-300 group"
+                    >
+                      <div className="holographic-icon text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        {item.icon}
+                      </div>
+                      <span className="text-white text-lg font-medium">{item.label}</span>
+                    </Link>
+                  ))}
+                </nav>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleBookingOpen();
+                    }}
+                    className="px-8 py-4 bg-white text-teal-600 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105"
+                  >
+                    Book Assessment
+                  </button>
+                </div>
+
+                {/* Contact Info */}
+                <div className="mt-8 text-center text-white/80 text-sm space-y-2">
+                  <p>{content.contact.phoneDisplay}</p>
+                  <p>{content.contact.email}</p>
                 </div>
               </div>
             </div>
-          </footer>
+          </>
         )}
+
+        {/* Main Content */}
+        <main className="pt-16">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/prices" element={<Prices />} />
+          </Routes>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-gray-50 border-t border-gray-100 py-8 mt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600">
+            <p>
+              &copy; {new Date().getFullYear()} {content.name}. All rights reserved.
+            </p>
+            <p className="mt-2">{content.contact.location}</p>
+          </div>
+        </footer>
       </div>
 
       <BookingModal
         isOpen={isBookingOpen}
         onClose={handleBookingClose}
         provider={{
-          id: 'default',
-          name: 'Service Provider',
+          id: 'wallsend',
+          name: content.name,
         }}
-        hourlyRate={100}
-        platformFeePercentage={0.1}
+        hourlyRate={content.pricing?.hourly || 190}
+        platformFeePercentage={0}
       />
-      {location.pathname !== '/admin' && (
-        <MobileCTABar ctaText="Book Now" ctaAction={handleBookingOpen} />
-      )}
+
+      <MobileCTABar onBookNow={handleBookingOpen} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import type { BookingModalProps } from '../types/booking.types';
 
@@ -65,74 +65,77 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex items-center justify-center p-4"
       onClick={handleBackdropClick}
       role="presentation"
+      style={{
+        animation: 'fadeIn 0.3s ease-out',
+      }}
     >
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
       <div
         ref={modalRef}
-        className="bg-gray-900 rounded-lg shadow-2xl border-2 border-[var(--wattle-gold)] max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
         style={{
-          boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.05)',
+          animation: 'slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b-2 border-[var(--wattle-gold)] p-6 flex justify-between items-center">
-          <h2
-            id="modal-title"
-            className="text-3xl font-bold text-[var(--wattle-gold)] uppercase tracking-wider"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
-            Book Your Hay Delivery
+        <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 p-6 flex justify-between items-center">
+          <h2 id="modal-title" className="text-2xl sm:text-3xl font-semibold text-gray-900">
+            Book Assessment
           </h2>
           <button
             onClick={onClose}
-            className="text-[var(--wattle-gold)] hover:text-[var(--digital-matrix)] transition-all hover:scale-110 hover:rotate-90 duration-300"
+            className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-2 hover:bg-gray-50 rounded-full"
             aria-label="Close booking modal"
           >
-            <X size={28} />
+            <X size={24} />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-6">
           {/* Step Indicator */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-3 mb-10">
             {[1, 2, 3, 4].map((step) => (
               <div key={step} className="flex items-center">
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all border-2 ${
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                     state.currentStep === step
-                      ? 'bg-[var(--outback-red)] text-white border-[var(--wattle-gold)] shadow-lg animate-pulse'
+                      ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
                       : state.currentStep > step
-                        ? 'bg-[var(--eucalyptus)] text-white border-[var(--digital-matrix)]'
-                        : 'bg-gray-800 text-gray-500 border-gray-700'
+                        ? 'bg-teal-100 text-teal-600'
+                        : 'bg-gray-100 text-gray-400'
                   }`}
-                  style={{
-                    boxShadow:
-                      state.currentStep === step
-                        ? '0 0 20px rgba(184, 48, 44, 0.5)'
-                        : state.currentStep > step
-                          ? '0 0 15px rgba(0, 255, 65, 0.3)'
-                          : 'none',
-                  }}
                 >
                   {state.currentStep > step ? '✓' : step}
                 </div>
                 {step < 4 && (
                   <div
-                    className={`w-16 h-1 transition-all ${
-                      state.currentStep > step
-                        ? 'bg-gradient-to-r from-[var(--digital-matrix)] to-[var(--wattle-gold)]'
-                        : 'bg-gray-800'
+                    className={`w-12 sm:w-16 h-0.5 transition-all duration-300 ${
+                      state.currentStep > step ? 'bg-teal-600' : 'bg-gray-200'
                     }`}
-                    style={{
-                      boxShadow:
-                        state.currentStep > step ? '0 0 10px rgba(0, 255, 65, 0.5)' : 'none',
-                    }}
                   />
                 )}
               </div>
@@ -143,140 +146,104 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           <div className="mb-8">
             {state.currentStep === 1 && (
               <div>
-                <h3
-                  className="text-2xl font-bold text-[var(--wattle-gold)] mb-2 uppercase tracking-wide"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
-                  Select a Date
-                </h3>
-                <p className="text-gray-300 mb-6 italic" style={{ fontFamily: 'var(--font-body)' }}>
-                  Choose your preferred delivery date. We deliver 7 days a week, rain, hail or
-                  shine! 🦘
-                </p>
-                <div
-                  className="bg-gray-800/50 border-2 border-[var(--digital-matrix)] rounded-lg p-8 text-center text-[var(--digital-matrix)] relative overflow-hidden"
-                  style={{
-                    boxShadow: 'inset 0 0 20px rgba(0, 255, 65, 0.1)',
-                  }}
-                >
-                  <div className="relative z-10">
-                    <p className="text-lg mb-2" style={{ fontFamily: 'var(--font-tech)' }}>
-                      Calendar implementation coming soon
-                    </p>
-                    <p className="text-sm text-gray-400">Fair dinkum delivery scheduling 📅</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Select a Date</h3>
+                <p className="text-gray-600 mb-6">Choose your preferred assessment date and time</p>
+                <div className="bg-gradient-to-br from-teal-50 to-blue-50 border border-teal-100 rounded-xl p-8 text-center">
+                  <div className="text-teal-600 mb-3">
+                    <svg
+                      className="w-16 h-16 mx-auto opacity-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
                   </div>
-                  <div
-                    className="absolute inset-0 opacity-5"
-                    style={{
-                      backgroundImage:
-                        'repeating-linear-gradient(0deg, transparent, transparent 2px, var(--digital-matrix) 2px, var(--digital-matrix) 4px)',
-                    }}
-                  ></div>
+                  <p className="text-gray-700 font-medium mb-1">Calendar Coming Soon</p>
+                  <p className="text-sm text-gray-500">Online booking will be available shortly</p>
                 </div>
               </div>
             )}
 
             {state.currentStep === 2 && (
               <div>
-                <h3
-                  className="text-2xl font-bold text-[var(--wattle-gold)] mb-2 uppercase tracking-wide"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
-                  Select Quantity & Type
-                </h3>
-                <p className="text-gray-300 mb-6 italic" style={{ fontFamily: 'var(--font-body)' }}>
-                  Choose your hay type and quantity. Premium Aussie hay, grown on our land! 🌾
-                </p>
-                <div
-                  className="bg-gray-800/50 border-2 border-[var(--wattle-gold)] rounded-lg p-8 text-center text-[var(--wattle-gold)] relative overflow-hidden"
-                  style={{
-                    boxShadow: 'inset 0 0 20px rgba(255, 215, 0, 0.1)',
-                  }}
-                >
-                  <div className="relative z-10">
-                    <p className="text-lg mb-2" style={{ fontFamily: 'var(--font-tech)' }}>
-                      Hay selection coming soon
-                    </p>
-                    <p className="text-sm text-gray-400">100% Australian. 100% Quality. 🇦🇺</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Select Service</h3>
+                <p className="text-gray-600 mb-6">Choose the type of assessment you need</p>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-8 text-center">
+                  <div className="text-blue-600 mb-3">
+                    <svg
+                      className="w-16 h-16 mx-auto opacity-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                      />
+                    </svg>
                   </div>
-                  <div
-                    className="absolute inset-0 opacity-5"
-                    style={{
-                      backgroundImage:
-                        'repeating-linear-gradient(90deg, transparent, transparent 2px, var(--wattle-gold) 2px, var(--wattle-gold) 4px)',
-                    }}
-                  ></div>
+                  <p className="text-gray-700 font-medium mb-1">Service Selection</p>
+                  <p className="text-sm text-gray-500">Comprehensive assessment options</p>
                 </div>
               </div>
             )}
 
             {state.currentStep === 3 && (
               <div>
-                <h3
-                  className="text-2xl font-bold text-[var(--wattle-gold)] mb-2 uppercase tracking-wide"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
-                  Review & Contact Details
-                </h3>
-                <p className="text-gray-300 mb-6 italic" style={{ fontFamily: 'var(--font-body)' }}>
-                  Review your order and provide your details. We&apos;ll sort you out, no worries!
-                  📋
-                </p>
-                <div
-                  className="bg-gray-800/50 border-2 border-[var(--sky-blue)] rounded-lg p-8 text-center text-[var(--sky-blue)] relative overflow-hidden"
-                  style={{
-                    boxShadow: 'inset 0 0 20px rgba(1, 33, 105, 0.2)',
-                  }}
-                >
-                  <div className="relative z-10">
-                    <p className="text-lg mb-2" style={{ fontFamily: 'var(--font-tech)' }}>
-                      Order summary coming soon
-                    </p>
-                    <p className="text-sm text-gray-400">Proudly Australian owned & operated 🦘</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Your Details</h3>
+                <p className="text-gray-600 mb-6">Provide your contact information</p>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 rounded-xl p-8 text-center">
+                  <div className="text-purple-600 mb-3">
+                    <svg
+                      className="w-16 h-16 mx-auto opacity-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
                   </div>
-                  <div
-                    className="absolute inset-0 opacity-5"
-                    style={{
-                      backgroundImage:
-                        'repeating-linear-gradient(45deg, transparent, transparent 10px, var(--sky-blue) 10px, var(--sky-blue) 12px)',
-                    }}
-                  ></div>
+                  <p className="text-gray-700 font-medium mb-1">Contact Form</p>
+                  <p className="text-sm text-gray-500">Secure information collection</p>
                 </div>
               </div>
             )}
 
             {state.currentStep === 4 && (
               <div>
-                <h3
-                  className="text-2xl font-bold text-[var(--wattle-gold)] mb-2 uppercase tracking-wide"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
-                  Fair Dinkum Payment
-                </h3>
-                <p className="text-gray-300 mb-6 italic" style={{ fontFamily: 'var(--font-body)' }}>
-                  Complete your booking. Fair prices, honest service - that&apos;s the Aussie way!
-                  💳
-                </p>
-                <div
-                  className="bg-gray-800/50 border-2 border-[var(--outback-red)] rounded-lg p-8 text-center text-[var(--outback-red)] relative overflow-hidden"
-                  style={{
-                    boxShadow: 'inset 0 0 20px rgba(184, 48, 44, 0.2)',
-                  }}
-                >
-                  <div className="relative z-10">
-                    <p className="text-lg mb-2" style={{ fontFamily: 'var(--font-tech)' }}>
-                      Payment processing coming soon
-                    </p>
-                    <p className="text-sm text-gray-400">Secure & trusted by Aussie farmers 🌾</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Confirmation</h3>
+                <p className="text-gray-600 mb-6">Review and confirm your booking</p>
+                <div className="bg-gradient-to-br from-green-50 to-teal-50 border border-green-100 rounded-xl p-8 text-center">
+                  <div className="text-green-600 mb-3">
+                    <svg
+                      className="w-16 h-16 mx-auto opacity-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
                   </div>
-                  <div
-                    className="absolute inset-0 opacity-5"
-                    style={{
-                      backgroundImage:
-                        'radial-gradient(circle, var(--outback-red) 1px, transparent 1px)',
-                      backgroundSize: '20px 20px',
-                    }}
-                  ></div>
+                  <p className="text-gray-700 font-medium mb-1">Almost There</p>
+                  <p className="text-sm text-gray-500">Confirm your appointment details</p>
                 </div>
               </div>
             )}
@@ -292,18 +259,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 }))
               }
               disabled={state.currentStep === 1}
-              className="px-8 py-3 border-2 border-gray-600 rounded-lg font-bold text-gray-300 hover:bg-gray-800 hover:border-[var(--wattle-gold)] hover:text-[var(--wattle-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-all uppercase tracking-wider"
-              style={{
-                fontFamily: 'var(--font-heading)',
-                boxShadow: state.currentStep !== 1 ? '0 0 10px rgba(255, 215, 0, 0.2)' : 'none',
-              }}
+              className="px-6 py-3 border border-gray-300 rounded-full font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
             >
               Back
             </button>
             <button
               onClick={() => {
                 if (state.currentStep === 4) {
-                  // Process booking
                   setState((prev) => ({ ...prev, isProcessing: true }));
                   setTimeout(() => {
                     onClose();
@@ -316,21 +278,25 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 }
               }}
               disabled={state.isProcessing}
-              className="px-8 py-3 bg-[var(--outback-red)] text-white rounded-lg font-bold hover:bg-[var(--wattle-gold)] hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all uppercase tracking-wider border-2 border-[var(--wattle-gold)] relative overflow-hidden group"
-              style={{
-                fontFamily: 'var(--font-heading)',
-                boxShadow: '0 0 20px rgba(184, 48, 44, 0.5)',
-              }}
+              className="px-6 py-3 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-teal-600/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105"
             >
-              <span className="relative z-10">
-                {state.currentStep === 4
-                  ? state.isProcessing
-                    ? 'Processing...'
-                    : 'Complete Booking'
-                  : 'Next'}
-              </span>
-              <div className="absolute inset-0 bg-[var(--digital-matrix)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+              {state.currentStep === 4
+                ? state.isProcessing
+                  ? 'Processing...'
+                  : 'Complete Booking'
+                : 'Next'}
             </button>
+          </div>
+
+          {/* Contact Information */}
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-500 mb-2">
+              Need help? Call us at{' '}
+              <a href="tel:0249615555" className="text-teal-600 hover:text-teal-700 font-medium">
+                (02) 4961 5555
+              </a>
+            </p>
+            <p className="text-xs text-gray-400">Monday - Friday, 9:00 AM - 5:00 PM</p>
           </div>
         </div>
       </div>

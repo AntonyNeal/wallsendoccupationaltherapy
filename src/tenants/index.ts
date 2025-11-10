@@ -6,12 +6,14 @@
 
 import demoConfig from './_template';
 import osullivanfarmsConfig from './osullivanfarms';
+import wallsendConfig from './wallsend';
 import type { TenantConfig } from '../core/types/tenant.types';
 
 /**
  * All active tenant configurations
  */
 export const tenants: Record<string, TenantConfig> = {
+  wallsend: wallsendConfig,
   demo: demoConfig,
   osullivanfarms: osullivanfarmsConfig,
   // Add new tenants here:
@@ -45,5 +47,5 @@ export function getAllTenants(): TenantConfig[] {
  * Get default tenant (fallback)
  */
 export function getDefaultTenant(): TenantConfig {
-  return osullivanfarmsConfig;
+  return wallsendConfig;
 }

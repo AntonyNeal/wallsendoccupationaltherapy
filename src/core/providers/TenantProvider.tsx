@@ -38,30 +38,30 @@ export function TenantProvider({ children }: TenantProviderProps) {
         console.debug('[Tenant] Detected hostname:', hostname);
         console.debug('[Tenant] Extracted subdomain:', subdomain);
 
-        // For development: localhost always maps to 'osullivanfarms'
-        // For Azure Static Web Apps: *.azurestaticapps.net maps to 'osullivanfarms'
-        // For Vercel: *.vercel.app maps to 'osullivanfarms'
-        // For production: osullivanfarms.tech maps to 'osullivanfarms'
+        // For development: localhost always maps to 'wallsend'
+        // For Azure Static Web Apps: *.azurestaticapps.net maps to 'wallsend'
+        // For Vercel: *.vercel.app maps to 'wallsend'
+        // For production: wallsendot.com.au maps to 'wallsend'
         if (
           hostname === 'localhost' ||
           hostname.startsWith('127.0.0.1') ||
           hostname.endsWith('.azurestaticapps.net') ||
           hostname.endsWith('.vercel.app') ||
-          hostname === 'osullivanfarms.tech' ||
-          hostname === 'www.osullivanfarms.tech'
+          hostname === 'wallsendot.com.au' ||
+          hostname === 'www.wallsendot.com.au'
         ) {
-          console.debug('[Tenant] Development/Production mode - loading osullivanfarms tenant');
-          const tenantData = await loadLocalTenantConfig('osullivanfarms');
+          console.debug('[Tenant] Development/Production mode - loading wallsend tenant');
+          const tenantData = await loadLocalTenantConfig('wallsend');
 
           if (!tenantData) {
-            throw new Error('Development tenant (osullivanfarms) not found');
+            throw new Error('Development tenant (wallsend) not found');
           }
 
           setTenant(tenantData);
           setTheme(tenantData.themeConfig);
           setContent(tenantData.contentConfig);
 
-          const photosConfig = await loadTenantPhotos('osullivanfarms');
+          const photosConfig = await loadTenantPhotos('wallsend');
           setPhotos(photosConfig);
 
           setLoading(false);
