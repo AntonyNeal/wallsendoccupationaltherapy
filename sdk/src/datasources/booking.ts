@@ -1,9 +1,12 @@
 /**
  * Booking Data Source - API methods for booking management
+ *
+ * Refactored to extend BaseDataSource for standard CRUD operations
+ * with booking-specific methods added.
  */
 
-import { ApiClient } from '../client';
-import { Booking, ApiResponse, ListResponse } from '../types';
+import { BaseDataSource } from '../core/BaseDataSource';
+import { Booking, ApiResponse } from '../types';
 
 interface CreateBookingRequest {
   tenantId: string | number;
@@ -28,58 +31,64 @@ interface UpdateStatusRequest {
   notes?: string;
 }
 
-export class BookingDataSource {
-  private static client = new ApiClient();
+/**
+ * Booking Data Source
+ *
+ * Provides standard CRUD operations plus booking-specific methods
+ */
+export class BookingDataSource extends BaseDataSource<Booking> {
+  protected endpoint = '/bookings';
+
+  // Inherits from BaseDataSource:
+  // - getAll(params?)
+  // - getById(id)
+  // - create(data)
+  // - update(id, data)
+  // - patch(id, data)
+  // - delete(id)
 
   /**
-   * Create a new booking
+   * Create a new booking (domain-specific method)
    */
-  static async create(booking: CreateBookingRequest): Promise<Booking> {
-    const response = await this.client.post<ApiResponse<Booking>>('/bookings', booking);
-    return response.data;
-  }
-
-  /**
-   * Get a booking by ID
-   */
-  static async getById(bookingId: string | number): Promise<Booking> {
-    const response = await this.client.get<ApiResponse<Booking>>(`/bookings/${bookingId}`);
-    return response.data;
+  async createBooking(booking: CreateBookingRequest): Promise<Booking> {
+    return this.create(booking as Partial<Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>>);
   }
 
   /**
    * Update booking status
    */
-  static async updateStatus(
-    bookingId: string | number,
-    update: UpdateStatusRequest
-  ): Promise<Booking> {
+  async updateStatus(bookingId: string | number, update: UpdateStatusRequest): Promise<Booking> {
     const response = await this.client.patch<ApiResponse<Booking>>(
-      `/bookings/${bookingId}/status`,
+      `${this.endpoint}/${bookingId}/status`,
       update
     );
-    return response.data;
+
+    if ('data' in response) {
+      return response.data;
+    }
+    return response as Booking;
   }
 
   /**
    * Get all bookings for a tenant
    */
-  static async getByTenant(
+  async getByTenant(
     tenantId: string | number,
     status?: string,
     page: number = 1,
     limit: number = 20
-  ): Promise<ListResponse<Booking>> {
-    const params: Record<string, string | number> = { page, limit };
-    if (status) params.status = status;
-
-    return this.client.get<ListResponse<Booking>>(`/bookings/tenant/${tenantId}`, params);
+  ): Promise<Booking[]> {
+    return this.getAll({
+      page,
+      limit,
+      filter: { tenantId, ...(status && { status }) },
+    });
   }
 
   /**
    * Cancel a booking
    */
-  static async cancel(bookingId: string | number, reason?: string): Promise<Booking> {
+  async cancel(bookingId: string | number, reason?: string): Promise<Booking> {
     return this.updateStatus(bookingId, {
       status: 'cancelled',
       notes: reason,
@@ -89,7 +98,14 @@ export class BookingDataSource {
   /**
    * Confirm a booking
    */
-  static async confirm(bookingId: string | number): Promise<Booking> {
+  async confirm(bookingId: string | number): Promise<Booking> {
     return this.updateStatus(bookingId, { status: 'confirmed' });
+  }
+
+  /**
+   * Complete a booking
+   */
+  async complete(bookingId: string | number): Promise<Booking> {
+    return this.updateStatus(bookingId, { status: 'completed' });
   }
 }

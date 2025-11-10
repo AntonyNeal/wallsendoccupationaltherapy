@@ -1,33 +1,57 @@
 /**
  * Tenant Data Source - API methods for tenant operations
+ *
+ * Refactored to extend BaseDataSource with tenant-specific methods
  */
 
-import { ApiClient } from '../client';
-import { Tenant, ApiResponse, ListResponse } from '../types';
+import { BaseDataSource } from '../core/BaseDataSource';
+import { Tenant, ApiResponse } from '../types';
 
-export class TenantDataSource {
-  private static client = new ApiClient();
+/**
+ * Tenant Data Source
+ *
+ * Provides standard CRUD operations plus tenant-specific lookup methods
+ */
+export class TenantDataSource extends BaseDataSource<Tenant> {
+  protected endpoint = '/tenants';
+
+  // Inherits from BaseDataSource:
+  // - getAll(params?)
+  // - getById(id)
+  // - create(data)
+  // - update(id, data)
+  // - delete(id)
 
   /**
    * Get tenant by subdomain
    */
-  static async getBySubdomain(subdomain: string): Promise<Tenant> {
-    const response = await this.client.get<ApiResponse<Tenant>>(`/tenants/${subdomain}`);
-    return response.data;
+  async getBySubdomain(subdomain: string): Promise<Tenant> {
+    const response = await this.client.get<ApiResponse<Tenant>>(`${this.endpoint}/${subdomain}`);
+
+    if ('data' in response) {
+      return response.data;
+    }
+    return response as Tenant;
   }
 
   /**
    * Get tenant by custom domain
    */
-  static async getByDomain(domain: string): Promise<Tenant> {
-    const response = await this.client.get<ApiResponse<Tenant>>(`/tenants/domain/${domain}`);
-    return response.data;
+  async getByDomain(domain: string): Promise<Tenant> {
+    const response = await this.client.get<ApiResponse<Tenant>>(
+      `${this.endpoint}/domain/${domain}`
+    );
+
+    if ('data' in response) {
+      return response.data;
+    }
+    return response as Tenant;
   }
 
   /**
    * Get current tenant from hostname
    */
-  static async getCurrent(): Promise<Tenant> {
+  async getCurrent(): Promise<Tenant> {
     const hostname = window.location.hostname;
 
     // Check for custom domains
@@ -52,7 +76,7 @@ export class TenantDataSource {
   /**
    * List all tenants (admin only)
    */
-  static async list(page: number = 1, limit: number = 20): Promise<ListResponse<Tenant>> {
-    return this.client.get<ListResponse<Tenant>>('/tenants', { page, limit });
+  async list(page: number = 1, limit: number = 20): Promise<Tenant[]> {
+    return this.getAll({ page, limit });
   }
 }

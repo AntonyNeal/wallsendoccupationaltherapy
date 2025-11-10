@@ -3,23 +3,72 @@
  * @packageDocumentation
  */
 
-// Export client
+// ============================================================================
+// CORE - Modular SDK Architecture
+// ============================================================================
+
+// Main SDK class (plugin-based)
+export { SDK, createSDK } from './core/SDK';
 export { ApiClient } from './client';
 
-// Export types
+// Core interfaces
+export type {
+  IHttpAdapter,
+  IDataSource,
+  IResource,
+  Plugin,
+  Middleware,
+  MiddlewareContext,
+  SDKConfig,
+  RequestConfig,
+  ResponseError,
+  ILogger,
+  ICache,
+  IStateAdapter,
+} from './core/interfaces';
+
+// HTTP Adapters
+export { FetchAdapter } from './core/adapters/FetchAdapter';
+
+// Base classes
+export { BaseDataSource } from './core/BaseDataSource';
+
+// Middleware
+export {
+  authMiddleware,
+  apiKeyMiddleware,
+  retryMiddleware,
+  loggingMiddleware,
+  type RetryOptions,
+  type LoggingOptions,
+} from './core/middleware';
+
+// Plugins
+export { BookingPlugin, TenantPlugin } from './plugins';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
 export * from './types';
 
-// Export data sources
+// ============================================================================
+// DATA SOURCES (Instance-based, extends BaseDataSource)
+// ============================================================================
+
 export { TenantDataSource } from './datasources/tenant';
+export { BookingDataSource } from './datasources/booking';
 export { AvailabilityDataSource } from './datasources/availability';
 export { LocationDataSource } from './datasources/location';
-export { BookingDataSource } from './datasources/booking';
 export { PaymentDataSource } from './datasources/payment';
 export { AnalyticsDataSource } from './datasources/analytics';
 export { TenantAnalyticsDataSource } from './datasources/tenantAnalytics';
 export { SocialAnalyticsDataSource } from './datasources/socialAnalytics';
 
-// Export generators
+// ============================================================================
+// GENERATORS
+// ============================================================================
+
 export {
   generateTheme,
   parseThemePrompt,
@@ -63,7 +112,10 @@ export {
   type LogoSpec,
 } from './generators/assets';
 
-// Export tools
+// ============================================================================
+// TOOLS
+// ============================================================================
+
 export {
   auditFile,
   auditFiles,
@@ -76,7 +128,10 @@ export {
   type AuditSummary,
 } from './tools/audit';
 
-// Export infrastructure
+// ============================================================================
+// INFRASTRUCTURE
+// ============================================================================
+
 export type {
   CloudProvider,
   CloudProviderConfig,
@@ -125,7 +180,10 @@ export {
   type TerraformModule,
 } from './infrastructure/terraform';
 
-// Export additional types from new datasources
+// ============================================================================
+// ADDITIONAL TYPES
+// ============================================================================
+
 export type {
   TenantPerformance,
   TrafficSource,

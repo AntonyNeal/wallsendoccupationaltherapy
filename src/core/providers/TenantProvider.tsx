@@ -40,12 +40,17 @@ export function TenantProvider({ children }: TenantProviderProps) {
 
         // For development: localhost always maps to 'osullivanfarms'
         // For Azure Static Web Apps: *.azurestaticapps.net maps to 'osullivanfarms'
+        // For Vercel: *.vercel.app maps to 'osullivanfarms'
+        // For production: osullivanfarms.tech maps to 'osullivanfarms'
         if (
           hostname === 'localhost' ||
           hostname.startsWith('127.0.0.1') ||
-          hostname.endsWith('.azurestaticapps.net')
+          hostname.endsWith('.azurestaticapps.net') ||
+          hostname.endsWith('.vercel.app') ||
+          hostname === 'osullivanfarms.tech' ||
+          hostname === 'www.osullivanfarms.tech'
         ) {
-          console.debug('[Tenant] Development/Azure mode - loading osullivanfarms tenant');
+          console.debug('[Tenant] Development/Production mode - loading osullivanfarms tenant');
           const tenantData = await loadLocalTenantConfig('osullivanfarms');
 
           if (!tenantData) {

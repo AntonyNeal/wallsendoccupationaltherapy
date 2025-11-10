@@ -1,0 +1,144 @@
+# DigitalOcean App Platform Deployment Configuration
+# Copy this file to app-spec.yaml and customize for your project
+
+domains:
+  - domain: yourdomain.com
+    type: PRIMARY
+    wildcard: true
+    
+name: your-service-booking-platform
+region: nyc1  # Choose: nyc1, sfo3, ams3, sgp1, lon1, fra1, tor1, blr1, syd1
+
+services:
+  # Backend API Service
+  - build_command: npm install && npm run build:api
+    envs:
+      # Database Configuration
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${db.DATABASE_URL}  # Auto-generated if using managed DB
+      
+      # Email Service
+      - key: SENDGRID_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: your_sendgrid_api_key
+      
+      - key: SENDGRID_FROM_EMAIL
+        scope: RUN_AND_BUILD_TIME
+        value: bookings@yourdomain.com
+      
+      # API Configuration
+      - key: ALLOWED_ORIGIN
+        scope: RUN_AND_BUILD_TIME
+        value: https://yourdomain.com
+      
+      # Security
+      - key: JWT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: your_jwt_secret_here
+      
+      # Environment
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      
+      - key: PORT
+        scope: RUN_AND_BUILD_TIME
+        value: '8080'
+    
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: your-username/your-repository
+    
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs  # Options: basic-xxs, basic-xs, basic-s, basic-m
+    name: api
+    routes:
+      - path: /api
+    run_command: npm start
+    source_dir: /
+
+  # Frontend Static Site
+  - build_command: npm install && npm run build
+    envs:
+      # Frontend Environment Variables
+      - key: VITE_API_BASE_URL
+        scope: BUILD_TIME
+        value: https://yourdomain.com
+      
+      - key: VITE_GA_MEASUREMENT_ID
+        scope: BUILD_TIME
+        value: G-XXXXXXXXXX
+      
+      - key: VITE_STRIPE_PUBLIC_KEY
+        scope: BUILD_TIME
+        value: pk_live_your_stripe_public_key
+      
+      - key: VITE_FUNCTIONS_URL
+        scope: BUILD_TIME
+        value: ${api.PUBLIC_URL}
+    
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: your-username/your-repository
+    
+    name: frontend
+    routes:
+      - path: /
+    source_dir: /
+    static_sites:
+      - build_command: npm run build
+        catchall_document: index.html
+        index_document: index.html
+        output_dir: dist
+
+# Optional: Managed Database
+databases:
+  - cluster_name: your-app-db
+    db_name: production
+    db_user: app_user
+    engine: PG
+    name: db
+    num_nodes: 1
+    size: db-s-1vcpu-1gb  # Options: db-s-1vcpu-1gb, db-s-1vcpu-2gb, db-s-2vcpu-4gb
+    version: "14"
+
+# Optional: Functions (Serverless)
+functions:
+  - github:
+      branch: main
+      deploy_on_push: true
+      repo: your-username/your-repository
+    name: serverless-functions
+    source_dir: /functions
+
+# Optional: Workers (Background Jobs)
+workers:
+  - build_command: npm install
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${db.DATABASE_URL}
+    
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: your-username/your-repository
+    
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: background-worker
+    run_command: npm run worker
+    source_dir: /
+
+# Configuration Notes:
+# 1. Replace 'yourdomain.com' with your actual domain
+# 2. Replace 'your-username/your-repository' with your GitHub repo
+# 3. Add secrets through DigitalOcean App Platform dashboard
+# 4. Adjust instance sizes based on your traffic needs
+# 5. Enable/disable optional services as needed

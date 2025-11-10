@@ -1,18 +1,25 @@
 {
   "name": "@your-organization/service-booking-sdk",
   "version": "1.0.0",
-  "description": "JavaScript SDK for service booking platform",
+  "description": "JavaScript SDK for service booking platform with deployment templates",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "deployment-templates",
+    "README.md",
+    "GENERATORS-GUIDE.md",
+    "INFRASTRUCTURE-GUIDE.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "node test-sdk.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "setup:vercel": "node scripts/install-deployment.js vercel",
+    "setup:digitalocean": "node scripts/install-deployment.js digitalocean",
+    "setup:netlify": "node scripts/install-deployment.js netlify"
   },
   "keywords": [
     "booking",
@@ -20,7 +27,12 @@
     "api",
     "services",
     "scheduling",
-    "typescript"
+    "typescript",
+    "deployment",
+    "vercel",
+    "digitalocean",
+    "netlify",
+    "templates"
   ],
   "author": "Your Organization",
   "license": "MIT",
